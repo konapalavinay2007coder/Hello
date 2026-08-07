@@ -1,7 +1,22 @@
 import axios from 'axios';
 import { WeatherCache } from '../models/WeatherCache.js';
 
-// Weather code interpretation helper
+// Coordinates lookup for common Indian districts
+const DISTRICT_COORDINATES = {
+  'nagaur': { lat: 27.2046, lng: 73.7417, name: 'Nagaur, Rajasthan' },
+  'jaipur': { lat: 26.9124, lng: 75.7873, name: 'Jaipur, Rajasthan' },
+  'pune': { lat: 18.5204, lng: 73.8567, name: 'Pune, Maharashtra' },
+  'nagpur': { lat: 21.1458, lng: 79.0882, name: 'Nagpur, Maharashtra' },
+  'merta': { lat: 26.6482, lng: 74.0374, name: 'Merta, Rajasthan' },
+  'jodhpur': { lat: 26.2389, lng: 73.0243, name: 'Jodhpur, Rajasthan' },
+  'mumbai': { lat: 19.0760, lng: 72.8777, name: 'Mumbai, Maharashtra' },
+  'nashik': { lat: 20.0059, lng: 73.7898, name: 'Nashik, Maharashtra' },
+  'solapur': { lat: 17.6599, lng: 75.9064, name: 'Solapur, Maharashtra' },
+  'indore': { lat: 22.7196, lng: 75.8577, name: 'Indore, Madhya Pradesh' },
+  'bhopal': { lat: 23.2599, lng: 77.4126, name: 'Bhopal, Madhya Pradesh' },
+  'delhi': { lat: 28.6139, lng: 77.2090, name: 'Delhi' }
+};
+
 const getWeatherCondition = (code) => {
   if (code === 0) return 'Clear Sky';
   if (code >= 1 && code <= 3) return 'Partly Cloudy';
@@ -13,13 +28,23 @@ const getWeatherCondition = (code) => {
   return 'Clear';
 };
 
-export const getWeather = async ({ lat = 27.2046, lng = 73.7417, locationKey = 'nagaur-rajasthan' }) => {
-  const parsedLat = parseFloat(lat);
-  const parsedLng = parseFloat(lng);
-  const locKey = locationKey.toLowerCase().trim();
+export const getWeather = async ({ lat, lng, district = '', locationKey = '' }) => {
+  let searchKey = (district || locationKey).toLowerCase().replace(/-rajasthan|-maharashtra/g, '').trim();
+  let coords = DISTRICT_COORDINATES[searchKey];
+
+  if (!coords) {
+    // If explicit lat/lng provided, use them
+    if (lat && lng) {
+      coords = { lat: parseFloat(lat), lng: parseFloat(lng), name: searchKey || 'Regional Location' };
+    } else {
+      coords = DISTRICT_COORDINATES['nagaur']; // Default fallback
+    }
+  }
+
+  const locKey = searchKey || 'nagaur';
 
   try {
-    const url = `https://api.open-meteo.com/v1/forecast?latitude=${parsedLat}&longitude=${parsedLng}&current_weather=true&daily=temperature_2m_max,temperature_2m_min,precipitation_sum&timezone=auto`;
+    const url = `https://api.open-meteo.com/v1/forecast?latitude=${coords.lat}&longitude=${coords.lng}&current_weather=true&daily=temperature_2m_max,temperature_2m_min,precipitation_sum&timezone=auto`;
 
     // 3-second timeout requirement
     const response = await axios.get(url, { timeout: 3000 });
@@ -35,9 +60,9 @@ export const getWeather = async ({ lat = 27.2046, lng = 73.7417, locationKey = '
     const forecastSummary = `Temp: ${minTemp}°C - ${maxTemp}°C. ${condition}. Rain: ${precip}mm.`;
 
     const weatherData = {
-      locationKey: locKey,
-      lat: parsedLat,
-      lng: parsedLng,
+      locationKey: coords.name,
+      lat: coords.lat,
+      lng: coords.lng,
       tempC,
       condition,
       forecastSummary,
@@ -46,7 +71,7 @@ export const getWeather = async ({ lat = 27.2046, lng = 73.7417, locationKey = '
 
     // Update DB cache asynchronously
     WeatherCache.findOneAndUpdate(
-      { locationKey: locKey },
+      { locationKey: coords.name },
       weatherData,
       { upsert: true, new: true }
     ).catch(err => console.error('[WeatherCache] DB update error:', err.message));
@@ -59,8 +84,7 @@ export const getWeather = async ({ lat = 27.2046, lng = 73.7417, locationKey = '
   } catch (error) {
     console.warn(`[weatherService] Live API call failed (${error.message}). Falling back to MongoDB cache...`);
 
-    // Fallback to cached entry in MongoDB
-    const cachedEntry = await WeatherCache.findOne({ locationKey: locKey }).sort({ fetchedAt: -1 });
+    const cachedEntry = await WeatherCache.findOne({ locationKey: new RegExp(locKey, 'i') }).sort({ fetchedAt: -1 });
 
     if (cachedEntry) {
       return {
@@ -71,18 +95,17 @@ export const getWeather = async ({ lat = 27.2046, lng = 73.7417, locationKey = '
       };
     }
 
-    // Default static fallback if database cache is completely empty
     return {
       live: false,
       stale: true,
       data: {
-        locationKey: locKey,
-        lat: parsedLat,
-        lng: parsedLng,
-        tempC: 32,
-        condition: 'Sunny (Default Fallback)',
-        forecastSummary: 'Hot and dry. Light rain expected in 2 days.',
-        fetchedAt: new Date(Date.now() - 3600 * 1000)
+        locationKey: coords.name,
+        lat: coords.lat,
+        lng: coords.lng,
+        tempC: 30,
+        condition: 'Partly Cloudy',
+        forecastSummary: 'Temp: 25°C - 34°C. Partly Cloudy.',
+        fetchedAt: new Date()
       },
       message: 'Serving default fallback weather data'
     };
