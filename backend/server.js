@@ -7,6 +7,8 @@ import directoryRoutes from './src/routes/directoryRoutes.js';
 import weatherRoutes from './src/routes/weatherRoutes.js';
 import mandiRoutes from './src/routes/mandiRoutes.js';
 import queryRoutes from './src/routes/queryRoutes.js';
+import communityRoutes from './src/routes/communityRoutes.js';
+import formFillRoutes from './src/routes/formFillRoutes.js';
 import { initCacheRefreshJob } from './src/services/cacheRefreshJob.js';
 
 dotenv.config();
@@ -42,6 +44,8 @@ app.use('/api/schemes', schemeRoutes);
 app.use('/api/directory', directoryRoutes);
 app.use('/api/weather', weatherRoutes);
 app.use('/api/mandi-prices', mandiRoutes);
+app.use('/api/community', communityRoutes);
+app.use('/api/form-fill', formFillRoutes);
 
 // Global Error Handler
 app.use((err, req, res, next) => {

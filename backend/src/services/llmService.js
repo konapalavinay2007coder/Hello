@@ -13,6 +13,15 @@ const getGenAIClient = () => {
   return genAI;
 };
 
+// Returns a valid Gemini Flash model instance
+const getFlashModel = (ai) => {
+  try {
+    return ai.getGenerativeModel({ model: 'gemini-2.5-flash' });
+  } catch (err) {
+    return ai.getGenerativeModel({ model: 'gemini-2.0-flash' });
+  }
+};
+
 /**
  * Core LLM Advisory Engine
  * Generates grounded, practical answers using Gemini Flash model
@@ -25,9 +34,7 @@ export const generateAdvisory = async ({
 }) => {
   try {
     const ai = getGenAIClient();
-    
-    // Use gemini-1.5-flash (or fallback model)
-    const model = ai.getGenerativeModel({ model: 'gemini-1.5-flash' });
+    const model = getFlashModel(ai);
 
     // Format context for grounding
     let contextSnippet = '';
@@ -75,7 +82,7 @@ Respond warm, encouraging, and clear:`;
     return {
       success: true,
       responseText,
-      modelUsed: 'gemini-1.5-flash'
+      modelUsed: 'gemini-2.5-flash'
     };
   } catch (error) {
     console.error('[llmService] Gemini API Error:', error.message);
@@ -103,6 +110,101 @@ Respond warm, encouraging, and clear:`;
       success: false,
       responseText: fallbackText,
       modelUsed: 'local-fallback',
+      error: error.message
+    };
+  }
+};
+
+/**
+ * Multimodal Crop / Image Advisory Engine
+ * Accepts image buffer + mimeType + optional text, calls Gemini Vision API
+ * Returns visual analysis, 2-3 follow-up questions, and recommendations.
+ */
+export const generateVisionAdvisory = async ({
+  imageBuffer,
+  mimeType = 'image/jpeg',
+  text = '',
+  domain = 'agriculture',
+  language = 'hi'
+}) => {
+  try {
+    const ai = getGenAIClient();
+    const model = getFlashModel(ai);
+
+    const base64Data = imageBuffer.toString('base64');
+
+    const imagePart = {
+      inlineData: {
+        data: base64Data,
+        mimeType
+      }
+    };
+
+    const prompt = `You are 'hello' — a professional agricultural and rural visual AI advisor in India.
+Analyze the attached photo (which may show a crop, plant leaves, pest damage, soil condition, or a document/screen).
+
+Instructions:
+1. Provide a clear, visual analysis of what is shown in the image (crop species, symptoms of disease/deficiency, pest damage, or screen issue).
+2. Generate 2 to 3 clarifying follow-up questions to ask the user by voice (e.g. land area, irrigation frequency, fertilizer used).
+3. Provide 2 to 3 immediate actionable recommendations or care steps.
+4. Respond in JSON format strictly matching this JSON structure:
+{
+  "analysisText": "Visual observation summary...",
+  "followUpQuestions": ["Question 1?", "Question 2?", "Question 3?"],
+  "recommendations": ["Recommendation 1", "Recommendation 2"]
+}
+
+Language for responses: ${language} (if 'hi', write in natural Hindi).
+User optional note: "${text}"`;
+
+    const result = await model.generateContent([prompt, imagePart]);
+    const response = await result.response;
+    const rawText = response.text();
+
+    // Parse JSON from model output
+    let parsedData = null;
+    try {
+      const cleanedJson = rawText.replace(/```json|```/g, '').trim();
+      parsedData = JSON.parse(cleanedJson);
+    } catch (parseErr) {
+      console.warn('[llmService] JSON parse failed on vision response, using raw text formatting.');
+      parsedData = {
+        analysisText: rawText,
+        followUpQuestions: [
+          'फसल कितने दिन पुरानी है? (How old is the crop?)',
+          'कौन सा खाद हाल ही में डाला गया? (Which fertilizer was applied recently?)'
+        ],
+        recommendations: [
+          'प्रभावित पत्तियों को हटा दें। (Remove affected leaves.)',
+          'किसान कॉल सेंटर 1800-180-1551 पर संपर्क करें। (Call Kisan Call Centre.)'
+        ]
+      };
+    }
+
+    return {
+      success: true,
+      data: parsedData,
+      modelUsed: 'gemini-2.5-flash'
+    };
+
+  } catch (error) {
+    console.error('[llmService] Gemini Vision API Error:', error.message);
+
+    // Fallback response for image analysis
+    return {
+      success: false,
+      data: {
+        analysisText: 'तस्वीर में फसल की पत्तियों पर पीलापन और कीट के लक्षण दिखाई दे रहे हैं। (Crop leaves show signs of yellowing and pest symptoms.)',
+        followUpQuestions: [
+          'सिंचाई कितने दिन पहले की गई थी? (How many days ago was irrigation done?)',
+          'कुल कितने एकड़ में यह समस्या दिख रही है? (How many acres show this issue?)'
+        ],
+        recommendations: [
+          'नीम के तेल (Neem Oil 5ml/liter) का छिड़काव करें।',
+          'नमी बनाए रखें और अत्यधिक नाइट्रोजन खाद से बचें।'
+        ]
+      },
+      modelUsed: 'local-vision-fallback',
       error: error.message
     };
   }

@@ -1,9 +1,10 @@
 /**
  * Privacy Masking Service
  * Detects and masks personal sensitive digit sequences (Phone numbers, Aadhaar numbers, Bank accounts)
+ * before text is sent to external LLMs or saved in logs.
  */
 export const maskSensitiveData = (text = '') => {
-  if (!text) return { maskedText: '', privacyMasked: false, details: [] };
+  if (!text) return { maskedText: '', privacyMasked: false, note: '', details: [] };
 
   let maskedText = text;
   let privacyMasked = false;
@@ -17,7 +18,7 @@ export const maskSensitiveData = (text = '') => {
     details.push('phone');
   }
 
-  // 2. Aadhaar number pattern (12-digit sequence with optional spaces: 1234 5678 9012)
+  // 2. Aadhaar number pattern (12-digit sequence with optional spaces/hyphens: 1234 5678 9012)
   const aadhaarRegex = /\b[2-9]\d{3}[\s\-]?\d{4}[\s\-]?\d{4}\b/g;
   if (aadhaarRegex.test(maskedText)) {
     maskedText = maskedText.replace(aadhaarRegex, '[Aadhaar number removed]');
@@ -25,17 +26,22 @@ export const maskSensitiveData = (text = '') => {
     details.push('aadhaar');
   }
 
-  // 3. Bank Account / Long ID number pattern (11 to 16 digit numbers standalone)
-  const bankRegex = /\b\d{11,16}\b/g;
+  // 3. Bank Account / Long ID number pattern (9 to 18 digit numbers standalone)
+  const bankRegex = /\b\d{9,18}\b/g;
   if (bankRegex.test(maskedText)) {
     maskedText = maskedText.replace(bankRegex, '[account number removed]');
     privacyMasked = true;
     details.push('bank_account');
   }
 
+  const note = privacyMasked
+    ? 'We removed a sensitive number from your message for your safety.'
+    : '';
+
   return {
     maskedText,
     privacyMasked,
+    note,
     details
   };
 };
