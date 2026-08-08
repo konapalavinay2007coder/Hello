@@ -19,6 +19,7 @@ export default function AdvisoryWorkspace() {
 
   // ChatGPT Edge-to-Edge Collapsible Sidebar state (closed by default)
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [showSubscriptionModal, setShowSubscriptionModal] = useState(false);
 
   // Chat Threads History State
   const [threads, setThreads] = useState([
@@ -548,20 +549,40 @@ export default function AdvisoryWorkspace() {
             </div>
 
             {/* Bottom ChatGPT Style User Profile Footer */}
-            <div style={{ paddingTop: '0.85rem', marginTop: '0.5rem', borderTop: '1px solid #f1f5f9', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+            <div 
+              onClick={() => setShowSubscriptionModal(true)}
+              title="Click to view Subscription Plans"
+              style={{ 
+                paddingTop: '0.85rem', 
+                marginTop: '0.5rem', 
+                borderTop: '1px solid #f1f5f9', 
+                display: 'flex', 
+                alignItems: 'center', 
+                justifyContent: 'space-between',
+                cursor: 'pointer',
+                padding: '0.5rem',
+                borderRadius: '12px',
+                transition: 'all 0.2s ease'
+              }}
+              onMouseEnter={(e) => e.currentTarget.style.background = '#e0f2fe'}
+              onMouseLeave={(e) => e.currentTarget.style.background = 'transparent'}
+            >
               <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
                 <div style={{ width: '32px', height: '32px', borderRadius: '50%', background: '#062C4D', color: '#ffffff', fontWeight: 800, fontSize: '0.8rem', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                   U
                 </div>
                 <div>
                   <div style={{ fontSize: '0.82rem', fontWeight: 800, color: '#062C4D' }}>Verified User</div>
-                  <div style={{ fontSize: '0.72rem', color: '#0284c7', fontWeight: 700 }}>Free Plan</div>
+                  <div style={{ fontSize: '0.72rem', color: '#0284c7', fontWeight: 800, display: 'flex', alignItems: 'center', gap: '0.2rem' }}>
+                    <span>Free Plan</span>
+                    <span style={{ fontSize: '0.65rem', background: '#0284c7', color: '#ffffff', padding: '0.05rem 0.35rem', borderRadius: '4px' }}>Upgrade ↗</span>
+                  </div>
                 </div>
               </div>
 
-              <Link to="/more" title="Settings" style={{ color: '#4D8FC7', textDecoration: 'none', fontSize: '1.1rem' }}>
+              <div style={{ color: '#4D8FC7', fontSize: '1.1rem' }}>
                 ⚙️
-              </Link>
+              </div>
             </div>
 
           </div>
@@ -1000,6 +1021,224 @@ export default function AdvisoryWorkspace() {
         </div>
 
       </main>
+
+      {/* Subscription Plan Modal Overlay */}
+      {showSubscriptionModal && (
+        <div style={{
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          zIndex: 9999,
+          background: 'rgba(6, 44, 77, 0.65)',
+          backdropFilter: 'blur(8px)',
+          WebkitBackdropFilter: 'blur(8px)',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          padding: '1.5rem'
+        }}>
+          <div style={{
+            width: '100%',
+            maxWidth: '850px',
+            background: '#ffffff',
+            borderRadius: '24px',
+            border: '1px solid rgba(2, 132, 199, 0.25)',
+            boxShadow: '0 25px 60px rgba(2, 132, 199, 0.25)',
+            padding: '2.25rem',
+            position: 'relative',
+            maxHeight: '90vh',
+            overflowY: 'auto'
+          }}>
+            {/* Modal Header */}
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '1.5rem' }}>
+              <div>
+                <div style={{ fontSize: '0.8rem', color: '#0284c7', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '1px' }}>
+                  Upgrade Your Experience
+                </div>
+                <h2 style={{ fontSize: '1.85rem', fontWeight: 800, color: '#062C4D', margin: '0.2rem 0 0 0' }}>
+                  Choose Your Subscription Plan
+                </h2>
+              </div>
+              <button
+                onClick={() => setShowSubscriptionModal(false)}
+                style={{
+                  background: '#f1f5f9',
+                  border: 'none',
+                  borderRadius: '50%',
+                  width: '36px',
+                  height: '36px',
+                  fontSize: '1.1rem',
+                  cursor: 'pointer',
+                  color: '#062C4D',
+                  fontWeight: 800,
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center'
+                }}
+              >
+                ✕
+              </button>
+            </div>
+
+            {/* 3 Pricing Grid Cards */}
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '1.25rem', marginTop: '1.5rem' }}>
+              
+              {/* Plan 1: Free Tier */}
+              <div style={{
+                border: '1.5px solid #cbd5e1',
+                borderRadius: '18px',
+                padding: '1.5rem',
+                background: '#f8fafc',
+                display: 'flex',
+                flexDirection: 'column',
+                justify: 'space-between'
+              }}>
+                <div>
+                  <div style={{ fontSize: '0.75rem', fontWeight: 800, color: '#4D8FC7', textTransform: 'uppercase' }}>Starter</div>
+                  <h3 style={{ fontSize: '1.4rem', fontWeight: 800, color: '#062C4D', margin: '0.3rem 0' }}>Free Plan</h3>
+                  <div style={{ fontSize: '1.8rem', fontWeight: 800, color: '#062C4D', margin: '0.5rem 0 1rem 0' }}>
+                    ₹0 <span style={{ fontSize: '0.85rem', color: '#4D8FC7', fontWeight: 500 }}>/ forever</span>
+                  </div>
+                  <ul style={{ listStyle: 'none', padding: 0, margin: 0, fontSize: '0.88rem', color: '#062C4D', display: 'flex', flexDirection: 'column', gap: '0.65rem' }}>
+                    <li>✓ 10 Daily AI Voice Queries</li>
+                    <li>✓ Standard Response Speed</li>
+                    <li>✓ Basic Aadhaar Privacy Masking</li>
+                    <li>✓ Community Board Access</li>
+                  </ul>
+                </div>
+                <button
+                  disabled
+                  style={{
+                    marginTop: '1.5rem',
+                    width: '100%',
+                    padding: '0.65rem',
+                    borderRadius: '10px',
+                    border: 'none',
+                    background: '#cbd5e1',
+                    color: '#475569',
+                    fontWeight: 800,
+                    fontSize: '0.9rem'
+                  }}
+                >
+                  Current Active Plan
+                </button>
+              </div>
+
+              {/* Plan 2: Pro Tier (Recommended) */}
+              <div style={{
+                border: '2px solid #0284c7',
+                borderRadius: '18px',
+                padding: '1.5rem',
+                background: 'linear-gradient(180deg, #ffffff 0%, #f0f9ff 100%)',
+                display: 'flex',
+                flexDirection: 'column',
+                justify: 'space-between',
+                position: 'relative',
+                boxShadow: '0 8px 25px rgba(2, 132, 199, 0.18)'
+              }}>
+                <div style={{
+                  position: 'absolute',
+                  top: '-12px',
+                  right: '20px',
+                  background: 'linear-gradient(135deg, #0284c7, #1d4ed8)',
+                  color: '#ffffff',
+                  fontSize: '0.72rem',
+                  fontWeight: 800,
+                  padding: '0.2rem 0.75rem',
+                  borderRadius: '9999px',
+                  textTransform: 'uppercase',
+                  letterSpacing: '0.5px'
+                }}>
+                  Most Popular
+                </div>
+                <div>
+                  <div style={{ fontSize: '0.75rem', fontWeight: 800, color: '#0284c7', textTransform: 'uppercase' }}>Pro Advisory</div>
+                  <h3 style={{ fontSize: '1.4rem', fontWeight: 800, color: '#062C4D', margin: '0.3rem 0' }}>Rural AI Pro</h3>
+                  <div style={{ fontSize: '1.8rem', fontWeight: 800, color: '#0284c7', margin: '0.5rem 0 1rem 0' }}>
+                    ₹99 <span style={{ fontSize: '0.85rem', color: '#4D8FC7', fontWeight: 500 }}>/ month</span>
+                  </div>
+                  <ul style={{ listStyle: 'none', padding: 0, margin: 0, fontSize: '0.88rem', color: '#062C4D', display: 'flex', flexDirection: 'column', gap: '0.65rem' }}>
+                    <li>⚡ <strong>Unlimited</strong> Voice & Image AI Queries</li>
+                    <li>⚡ Instant Priority Gemini & Groq Response</li>
+                    <li>⚡ Deep Crop Disease Diagnosis & Treatment</li>
+                    <li>⚡ MHT-CET Scorecard & College Predictor</li>
+                    <li>⚡ 24/7 Kisan Call Centre Priority Line</li>
+                  </ul>
+                </div>
+                <button
+                  onClick={() => {
+                    alert('Thank you! Upgrading your account to Rural AI Pro (₹99/mo)...');
+                    setShowSubscriptionModal(false);
+                  }}
+                  style={{
+                    marginTop: '1.5rem',
+                    width: '100%',
+                    padding: '0.75rem',
+                    borderRadius: '10px',
+                    border: 'none',
+                    background: 'linear-gradient(135deg, #0284c7, #1d4ed8)',
+                    color: '#ffffff',
+                    fontWeight: 800,
+                    fontSize: '0.92rem',
+                    cursor: 'pointer',
+                    boxShadow: '0 4px 14px rgba(2, 132, 199, 0.35)'
+                  }}
+                >
+                  Upgrade to Pro (₹99) 🚀
+                </button>
+              </div>
+
+              {/* Plan 3: CSC Kiosk Tier */}
+              <div style={{
+                border: '1.5px solid #cbd5e1',
+                borderRadius: '18px',
+                padding: '1.5rem',
+                background: '#ffffff',
+                display: 'flex',
+                flexDirection: 'column',
+                justify: 'space-between'
+              }}>
+                <div>
+                  <div style={{ fontSize: '0.75rem', fontWeight: 800, color: '#4D8FC7', textTransform: 'uppercase' }}>CSC Partner</div>
+                  <h3 style={{ fontSize: '1.4rem', fontWeight: 800, color: '#062C4D', margin: '0.3rem 0' }}>CSC Enterprise</h3>
+                  <div style={{ fontSize: '1.8rem', fontWeight: 800, color: '#062C4D', margin: '0.5rem 0 1rem 0' }}>
+                    ₹499 <span style={{ fontSize: '0.85rem', color: '#4D8FC7', fontWeight: 500 }}>/ month</span>
+                  </div>
+                  <ul style={{ listStyle: 'none', padding: 0, margin: 0, fontSize: '0.88rem', color: '#062C4D', display: 'flex', flexDirection: 'column', gap: '0.65rem' }}>
+                    <li>🏢 Multi-User CSC Kiosk Portal</li>
+                    <li>🏢 Unlimited PDF Scheme Auto-Form Fill</li>
+                    <li>🏢 Offline Signal Data Caching</li>
+                    <li>🏢 Dedicated Account Manager</li>
+                  </ul>
+                </div>
+                <button
+                  onClick={() => {
+                    alert('Contacting CSC Enterprise Team...');
+                    setShowSubscriptionModal(false);
+                  }}
+                  style={{
+                    marginTop: '1.5rem',
+                    width: '100%',
+                    padding: '0.65rem',
+                    borderRadius: '10px',
+                    border: '1.5px solid #0284c7',
+                    background: '#ffffff',
+                    color: '#0284c7',
+                    fontWeight: 800,
+                    fontSize: '0.9rem',
+                    cursor: 'pointer'
+                  }}
+                >
+                  Contact Enterprise
+                </button>
+              </div>
+
+            </div>
+          </div>
+        </div>
+      )}
 
     </div>
   );
