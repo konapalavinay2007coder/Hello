@@ -1,9 +1,9 @@
 import mongoose from 'mongoose';
 
 export const connectDB = async () => {
-    const mongoUri = process.env.MONGODB_URL || process.env.MONGODB_URI || process.env.MONGO_URI || process.env.MONGO_URL;
+    const mongoUri = process.env.MONGODB_URI || process.env.MONGO_URI;
     if (!mongoUri) {
-      console.warn('[MongoDB] Warning: No MongoDB connection URL found in MONGODB_URL, MONGODB_URI, MONGO_URI, or MONGO_URL.');
+      console.warn('[MongoDB] Warning: Neither MONGODB_URI nor MONGO_URI environment variable is defined.');
       return;
     }
     const conn = await mongoose.connect(mongoUri, {
