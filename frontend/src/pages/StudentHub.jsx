@@ -37,12 +37,17 @@ export default function StudentHub() {
     }, 50);
   };
 
+  const handleCategoryChange = (catKey) => {
+    setSelectedCategory(catKey);
+    setScholarshipPage(1);
+  };
+
   const filteredScholarships = scholarships.filter(s => {
     if (selectedCategory !== 'all' && s.category !== selectedCategory && s.category !== 'general') return false;
     return true;
   });
 
-  const schTotalPages = Math.ceil(filteredScholarships.length / schItemsPerPage);
+  const schTotalPages = Math.max(1, Math.ceil(filteredScholarships.length / schItemsPerPage));
   const paginatedScholarships = filteredScholarships.slice((scholarshipPage - 1) * schItemsPerPage, scholarshipPage * schItemsPerPage);
 
   const handleEnroll = (courseId) => {
@@ -512,7 +517,7 @@ export default function StudentHub() {
               {/* Category Filter Buttons */}
               <div style={{ background: '#ffffff', border: '1px solid #cbd5e1', padding: '0.35rem', borderRadius: '9999px', display: 'flex', gap: '0.3rem', flexWrap: 'wrap', boxShadow: '0 2px 8px rgba(0,0,0,0.04)' }}>
                   <button
-                    onClick={() => setSelectedCategory('all')}
+                    onClick={() => handleCategoryChange('all')}
                     style={{
                       padding: '0.45rem 1.1rem',
                       borderRadius: '9999px',
@@ -527,7 +532,7 @@ export default function StudentHub() {
                     {t.allCat}
                   </button>
                   <button
-                    onClick={() => setSelectedCategory('ebc')}
+                    onClick={() => handleCategoryChange('ebc')}
                     style={{
                       padding: '0.45rem 1.1rem',
                       borderRadius: '9999px',
@@ -542,7 +547,7 @@ export default function StudentHub() {
                     {t.ebcCat}
                   </button>
                   <button
-                    onClick={() => setSelectedCategory('sc_st')}
+                    onClick={() => handleCategoryChange('sc_st')}
                     style={{
                       padding: '0.45rem 1.1rem',
                       borderRadius: '9999px',
@@ -557,7 +562,7 @@ export default function StudentHub() {
                     {t.scstCat}
                   </button>
                   <button
-                    onClick={() => setSelectedCategory('minority')}
+                    onClick={() => handleCategoryChange('minority')}
                     style={{
                       padding: '0.45rem 1.1rem',
                       borderRadius: '9999px',
