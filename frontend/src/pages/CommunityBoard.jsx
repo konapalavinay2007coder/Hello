@@ -1,306 +1,160 @@
-import React, { useState, useEffect } from 'react';
-import { getCommunityPosts, createCommunityPost, addCommunityAnswer, upvoteCommunityAnswer } from '../services/api';
-import { formTemplates } from '../data/formTemplates';
-import { communityPosts as staticPosts } from '../data/communityPosts';
+import React, { useState } from 'react';
+import { useLanguage } from '../context/LanguageContext';
+import { translations } from '../data/translations';
+
+const shgCircles = [
+  {
+    id: 1,
+    name: "Lakshmi Self Help Group",
+    district: "Nagaur",
+    memberCount: 14,
+    focusArea: "Organic Fertilizer & Dairy"
+  },
+  {
+    id: 2,
+    name: "Pragati Mahila Mandal",
+    district: "Jaipur",
+    memberCount: 22,
+    focusArea: "Handicrafts & Pickle Manufacturing"
+  },
+  {
+    id: 3,
+    name: "Kisan Kranti Sangathan",
+    district: "Pune",
+    memberCount: 35,
+    focusArea: "Mandi Aggregation & Solar Drying"
+  }
+];
 
 export default function CommunityBoard() {
-  const [activeTab, setActiveTab] = useState('community');
-  const [posts, setPosts] = useState(staticPosts);
-  const [newQuestion, setNewQuestion] = useState('');
-  const [answerTextMap, setAnswerTextMap] = useState({});
-  const [loading, setLoading] = useState(false);
+  const { language } = useLanguage();
+  const t = translations[language]?.community || translations.en.community;
 
-  // Scheme Auto-Fill Wizard States
-  const [selectedForm, setSelectedForm] = useState(null);
-  const [formDataState, setFormDataState] = useState({});
-  const [submittedSuccess, setSubmittedSuccess] = useState(false);
-
-  const fetchPosts = async () => {
-    setLoading(true);
-    try {
-      const res = await getCommunityPosts();
-      if (res.data && res.data.length > 0) {
-        setPosts(res.data);
-      }
-    } catch (err) {
-      console.warn('[Community] Using cached community posts');
-    } finally {
-      setLoading(false);
+  // Community Q&A state
+  const [userQuestion, setUserQuestion] = useState('');
+  const [posts, setPosts] = useState([
+    {
+      id: 1,
+      author: "Ramesh Pawar (Farmer, Nagaur)",
+      text: "Has anyone received PM-KISAN 16th installment SMS today?",
+      replies: 4,
+      time: "2 hours ago"
+    },
+    {
+      id: 2,
+      author: "Anita Sharma (SHG Leader, Jaipur)",
+      text: "Free Mahila Samriddhi loan awareness drive at CSC tomorrow at 10 AM.",
+      replies: 7,
+      time: "5 hours ago"
     }
-  };
+  ]);
 
-  useEffect(() => {
-    fetchPosts();
-  }, []);
-
-  const handleCreatePost = async (e) => {
+  const handleAddPost = (e) => {
     e.preventDefault();
-    if (!newQuestion.trim()) return;
-
-    try {
-      await createCommunityPost({
-        questionText: newQuestion,
-        domain: 'agriculture',
-        location: { district: 'Nagaur' }
-      });
-      setNewQuestion('');
-      fetchPosts();
-    } catch (err) {
-      const newPost = {
-        _id: `post-${Date.now()}`,
-        questionText: newQuestion,
-        location: { district: 'Nagaur' },
-        domain: 'agriculture',
-        answers: []
-      };
-      setPosts([newPost, ...posts]);
-      setNewQuestion('');
-    }
-  };
-
-  const handleAddAnswer = async (postId) => {
-    const text = answerTextMap[postId];
-    if (!text || !text.trim()) return;
-
-    try {
-      await addCommunityAnswer(postId, { text, authorName: 'CSC Operator' });
-      setAnswerTextMap({ ...answerTextMap, [postId]: '' });
-      fetchPosts();
-    } catch (err) {
-      setPosts(posts.map(p => p.id === postId || p._id === postId ? {
-        ...p,
-        answers: [...(p.answers || []), { id: `ans-${Date.now()}`, text, authorName: 'CSC Operator', upvotes: 1 }]
-      } : p));
-      setAnswerTextMap({ ...answerTextMap, [postId]: '' });
-    }
-  };
-
-  const handleUpvote = async (postId, answerId) => {
-    try {
-      await upvoteCommunityAnswer(postId, answerId);
-      fetchPosts();
-    } catch (err) {
-      setPosts(posts.map(p => p.id === postId || p._id === postId ? {
-        ...p,
-        answers: (p.answers || []).map(a => a.id === answerId || a._id === answerId ? { ...a, upvotes: (a.upvotes || 0) + 1 } : a)
-      } : p));
-    }
-  };
-
-  const handleStartWizard = (form) => {
-    setSelectedForm(form);
-    setFormDataState({});
-    setSubmittedSuccess(false);
-  };
-
-  const handleSubmitWizard = (e) => {
-    e.preventDefault();
-    setSubmittedSuccess(true);
+    if (!userQuestion.trim()) return;
+    setPosts([
+      {
+        id: Date.now(),
+        author: "You (Verified User)",
+        text: userQuestion,
+        replies: 0,
+        time: "Just now"
+      },
+      ...posts
+    ]);
+    setUserQuestion('');
   };
 
   return (
-    <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '1.5rem', fontFamily: 'var(--font-family)' }}>
+    <div style={{ width: '100%', padding: '2rem 3rem 5rem 3rem', fontFamily: "'Atkinson Hyperlegible', sans-serif" }}>
       
       {/* Header */}
-      <div style={{ marginBottom: '2rem' }}>
-        <div className="glass-pill" style={{ marginBottom: '0.75rem' }}>
-          <span>🤝</span>
-          <span>COMMUNITY & SCHEMES</span>
+      <div style={{ marginBottom: '2.5rem' }}>
+        <div style={{
+          display: 'inline-flex',
+          alignItems: 'center',
+          gap: '0.4rem',
+          background: 'rgba(2, 132, 199, 0.12)',
+          border: '1px solid rgba(2, 132, 199, 0.3)',
+          borderRadius: '9999px',
+          padding: '0.35rem 1rem',
+          color: '#4D8FC7',
+          fontSize: '0.85rem',
+          fontWeight: 700,
+          marginBottom: '1rem'
+        }}>
+          <span>{t.badge}</span>
         </div>
-        <h2 style={{ fontSize: '2.2rem', fontWeight: 800, color: '#ffffff', margin: 0, letterSpacing: '-0.5px' }}>
-          Village Q&A Board & Welfare Schemes
-        </h2>
-        <p style={{ color: '#94a3b8', margin: '0.4rem 0 0 0', fontSize: '1rem' }}>
-          Village Q&A community board, expert answers, and government welfare scheme auto-fill form wizards.
+
+        <h1 style={{ fontSize: 'clamp(2.2rem, 4vw, 3.5rem)', fontWeight: 800, color: '#062C4D', margin: 0, letterSpacing: '-1px' }}>
+          {t.title}
+        </h1>
+        <p style={{ color: '#4D8FC7', margin: '0.5rem 0 0 0', fontSize: '1.1rem', fontWeight: 500 }}>
+          {t.subtitle}
         </p>
       </div>
 
-      {/* Tab Switcher */}
-      <div style={{ display: 'flex', gap: '0.75rem', marginBottom: '2rem' }}>
-        <button
-          onClick={() => setActiveTab('community')}
-          style={{
-            padding: '0.65rem 1.5rem',
-            fontSize: '0.95rem',
-            fontWeight: 700,
-            background: activeTab === 'community' ? 'linear-gradient(135deg, #2563eb, #38bdf8)' : 'rgba(15, 23, 42, 0.8)',
-            color: activeTab === 'community' ? '#ffffff' : '#94a3b8',
-            border: activeTab === 'community' ? 'none' : '1px solid rgba(255, 255, 255, 0.12)',
-            borderRadius: '9999px',
-            cursor: 'pointer',
-            boxShadow: activeTab === 'community' ? '0 4px 15px rgba(56, 189, 248, 0.3)' : 'none'
-          }}
-        >
-          🤝 Village Community Q&A Board
-        </button>
+      {/* SECTION 1: SHG Directory */}
+      <section style={{ marginBottom: '3.5rem' }}>
+        <h2 style={{ fontSize: '1.5rem', fontWeight: 800, color: '#062C4D', marginBottom: '1.5rem', borderLeft: '4px solid #0284c7', paddingLeft: '0.75rem' }}>
+          {t.sec2Title}
+        </h2>
 
-        <button
-          onClick={() => setActiveTab('schemes')}
-          style={{
-            padding: '0.65rem 1.5rem',
-            fontSize: '0.95rem',
-            fontWeight: 700,
-            background: activeTab === 'schemes' ? 'linear-gradient(135deg, #2563eb, #38bdf8)' : 'rgba(15, 23, 42, 0.8)',
-            color: activeTab === 'schemes' ? '#ffffff' : '#94a3b8',
-            border: activeTab === 'schemes' ? 'none' : '1px solid rgba(255, 255, 255, 0.12)',
-            borderRadius: '9999px',
-            cursor: 'pointer',
-            boxShadow: activeTab === 'schemes' ? '0 4px 15px rgba(56, 189, 248, 0.3)' : 'none'
-          }}
-        >
-          🏛️ Schemes & Assisted Form Wizards
-        </button>
-      </div>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '1.5rem' }}>
+          {shgCircles.map((shg) => (
+            <div key={shg.id} style={{ background: '#ffffff', border: '1px solid #cbd5e1', borderRadius: '16px', padding: '1.75rem', boxShadow: '0 4px 15px rgba(2,132,199,0.06)' }}>
+              <h3 style={{ margin: '0 0 0.5rem 0', color: '#062C4D', fontSize: '1.25rem', fontWeight: 800 }}>{shg.name}</h3>
+              <p style={{ fontSize: '0.9rem', color: '#4D8FC7', margin: '0.3rem 0' }}>District: <strong style={{ color: '#062C4D' }}>{shg.district}</strong></p>
+              <p style={{ fontSize: '0.9rem', color: '#4D8FC7', margin: '0.3rem 0' }}>{t.members} {shg.memberCount}</p>
+              <p style={{ fontSize: '0.9rem', color: '#4D8FC7', margin: '0.3rem 0' }}>{t.focus} {shg.focusArea}</p>
+              <button style={{ width: '100%', marginTop: '1.25rem', padding: '0.7rem', background: '#f8fafc', border: '1px solid #cbd5e1', color: '#062C4D', borderRadius: '8px', cursor: 'pointer', fontWeight: 800 }}>
+                {t.joinCircle}
+              </button>
+            </div>
+          ))}
+        </div>
+      </section>
 
-      {/* TAB 1: Village Community Q&A Board */}
-      {activeTab === 'community' && (
-        <div>
-          {/* Post Question Form */}
-          <form onSubmit={handleCreatePost} className="glass-panel" style={{ padding: '1.5rem', marginBottom: '2rem' }}>
-            <h3 style={{ margin: '0 0 0.5rem 0', color: '#38bdf8', fontSize: '1.2rem', fontWeight: 700 }}>Ask a Community Question</h3>
-            <textarea
-              rows="2"
-              style={{ width: '100%', padding: '0.75rem', borderRadius: '10px', background: 'rgba(15, 23, 42, 0.8)', border: '1px solid rgba(255, 255, 255, 0.15)', color: '#fff', outline: 'none' }}
-              placeholder="Ask a question for Nagaur / Pune farmers & villagers..."
-              value={newQuestion}
-              onChange={(e) => setNewQuestion(e.target.value)}
+      {/* SECTION 2: Community Discussion Board */}
+      <section>
+        <div style={{
+          background: '#ffffff',
+          border: '1px solid #cbd5e1',
+          borderRadius: '20px',
+          padding: '2rem',
+          boxShadow: '0 8px 30px rgba(2, 132, 199, 0.08)'
+        }}>
+          <h2 style={{ margin: '0 0 1.25rem 0', color: '#062C4D', fontSize: '1.5rem', fontWeight: 800 }}>
+            {t.sec3Title}
+          </h2>
+
+          <form onSubmit={handleAddPost} style={{ display: 'flex', gap: '1rem', marginBottom: '2rem' }}>
+            <input 
+              type="text" 
+              placeholder="Ask your village peers a question..."
+              value={userQuestion}
+              onChange={(e) => setUserQuestion(e.target.value)}
+              style={{ flex: 1, padding: '0.75rem 1rem', background: '#f8fafc', border: '1px solid #cbd5e1', borderRadius: '10px', color: '#062C4D', outline: 'none', fontFamily: 'inherit' }}
             />
-            <button type="submit" style={{ marginTop: '0.75rem', padding: '0.6rem 1.25rem', background: '#38bdf8', color: '#070b14', border: 'none', borderRadius: '8px', cursor: 'pointer', fontWeight: 800 }}>
-              Submit Question
+            <button type="submit" style={{ padding: '0.75rem 1.5rem', background: '#0284c7', color: '#ffffff', border: 'none', borderRadius: '10px', cursor: 'pointer', fontWeight: 800 }}>
+              {t.postQuery}
             </button>
           </form>
 
-          {/* Questions List */}
-          {loading ? <p style={{ color: '#94a3b8' }}>Loading community posts...</p> : (
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
-              {posts.map((post) => (
-                <div key={post.id || post._id} className="glass-panel" style={{ padding: '1.5rem' }}>
-                  <h4 style={{ margin: '0 0 0.4rem 0', color: '#ffffff', fontSize: '1.2rem' }}>❓ {post.questionText}</h4>
-                  <p style={{ fontSize: '0.85rem', color: '#94a3b8', margin: '0 0 1rem 0' }}>
-                    By: {post.authorName || 'Village Resident'} ({post.authorDistrict || post.location?.district || 'Nagaur'})
-                  </p>
-
-                  {/* Answers */}
-                  <div style={{ paddingLeft: '0.75rem', borderLeft: '3px solid rgba(56, 189, 248, 0.3)' }}>
-                    <h5 style={{ margin: '0 0 0.75rem 0', color: '#cbd5e1' }}>Answers ({post.answers?.length || 0}):</h5>
-                    {post.answers?.map((ans) => (
-                      <div key={ans.id || ans._id} style={{ background: 'rgba(15, 23, 42, 0.6)', border: ans.isExpert ? '1px solid #34d399' : '1px solid rgba(255,255,255,0.08)', padding: '0.85rem', borderRadius: '10px', marginBottom: '0.6rem' }}>
-                        <p style={{ margin: 0, fontSize: '0.95rem', color: '#f8fafc', lineHeight: 1.5 }}>{ans.text}</p>
-                        <div style={{ marginTop: '0.5rem', fontSize: '0.8rem', color: '#94a3b8', display: 'flex', alignItems: 'center', gap: '0.75rem', flexWrap: 'wrap' }}>
-                          <span>By: <strong style={{ color: '#fff' }}>{ans.authorName}</strong> {ans.isExpert && '🏅 (Certified Expert)'}</span>
-                          <span>Upvotes: <strong style={{ color: '#34d399' }}>{ans.upvotes || 0}</strong></span>
-                          <button 
-                            onClick={() => handleUpvote(post.id || post._id, ans.id || ans._id)}
-                            style={{ padding: '0.2rem 0.6rem', fontSize: '0.75rem', cursor: 'pointer', background: 'rgba(56, 189, 248, 0.15)', border: '1px solid rgba(56, 189, 248, 0.3)', color: '#38bdf8', borderRadius: '4px', fontWeight: 700 }}
-                          >
-                            👍 Upvote
-                          </button>
-                        </div>
-                      </div>
-                    ))}
-
-                    {/* Add Answer */}
-                    <div style={{ marginTop: '0.85rem', display: 'flex', gap: '0.5rem' }}>
-                      <input
-                        type="text"
-                        placeholder="Write an answer..."
-                        value={answerTextMap[post.id || post._id] || ''}
-                        onChange={(e) => setAnswerTextMap({ ...answerTextMap, [post.id || post._id]: e.target.value })}
-                        style={{ flex: 1, padding: '0.6rem 0.8rem', background: 'rgba(15, 23, 42, 0.8)', border: '1px solid rgba(255, 255, 255, 0.15)', borderRadius: '8px', color: '#fff', outline: 'none' }}
-                      />
-                      <button onClick={() => handleAddAnswer(post.id || post._id)} style={{ padding: '0.6rem 1.25rem', background: '#38bdf8', color: '#070b14', border: 'none', borderRadius: '8px', cursor: 'pointer', fontWeight: 800 }}>
-                        Submit
-                      </button>
-                    </div>
-                  </div>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+            {posts.map((post) => (
+              <div key={post.id} style={{ background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: '12px', padding: '1.25rem' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.85rem', color: '#4D8FC7', marginBottom: '0.4rem' }}>
+                  <strong style={{ color: '#062C4D' }}>{post.author}</strong>
+                  <span>{post.time}</span>
                 </div>
-              ))}
-            </div>
-          )}
-        </div>
-      )}
-
-      {/* TAB 2: Government Welfare Schemes */}
-      {activeTab === 'schemes' && (
-        <div>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '1.25rem' }}>
-            {formTemplates.map((form) => (
-              <div key={form.id} className="glass-panel" style={{ padding: '1.5rem', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
-                <div>
-                  <h4 style={{ margin: '0 0 0.4rem 0', color: '#ffffff', fontSize: '1.2rem' }}>{form.name}</h4>
-                  <small style={{ color: '#94a3b8', display: 'block', marginBottom: '0.5rem' }}>Dept: {form.department}</small>
-                  <p style={{ fontSize: '0.95rem', fontWeight: 800, color: '#34d399', margin: '0.5rem 0' }}>
-                    Benefit: {form.benefit}
-                  </p>
-                </div>
-
-                <button 
-                  onClick={() => handleStartWizard(form)}
-                  style={{ marginTop: '1.25rem', width: '100%', padding: '0.75rem', background: 'linear-gradient(135deg, #38bdf8, #2563eb)', color: '#fff', border: 'none', borderRadius: '8px', cursor: 'pointer', fontWeight: 800 }}
-                >
-                  🎙️ Start Voice Auto-Fill Form Wizard →
-                </button>
+                <p style={{ margin: '0.4rem 0', color: '#062C4D', fontSize: '1.05rem', lineHeight: 1.5 }}>{post.text}</p>
+                <small style={{ color: '#0284c7', fontWeight: 800 }}>💬 {post.replies} Replies</small>
               </div>
             ))}
           </div>
         </div>
-      )}
-
-      {/* Form Wizard Modal */}
-      {selectedForm && (
-        <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(0,0,0,0.8)', backdropFilter: 'blur(12px)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000 }}>
-          <div className="glass-panel" style={{ padding: '2rem', maxWidth: '540px', width: '90%', maxHeight: '90vh', overflowY: 'auto', background: '#0f172a' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
-              <h3 style={{ margin: 0, color: '#ffffff' }}>{selectedForm.name}</h3>
-              <button onClick={() => setSelectedForm(null)} style={{ cursor: 'pointer', background: 'transparent', border: 'none', color: '#94a3b8', fontSize: '1.2rem' }}>✕</button>
-            </div>
-
-            {!submittedSuccess ? (
-              <form onSubmit={handleSubmitWizard}>
-                <div style={{ background: 'rgba(56, 189, 248, 0.15)', padding: '0.6rem 0.8rem', borderRadius: '8px', marginBottom: '1.25rem', fontSize: '0.85rem', color: '#38bdf8' }}>
-                  🎙️ Simulated Voice Slot Filling: Speak field values or type them in below.
-                </div>
-
-                {selectedForm.fields.map((field) => (
-                  <div key={field.id} style={{ marginBottom: '1rem' }}>
-                    <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 700, color: '#e2e8f0', marginBottom: '0.3rem' }}>
-                      {field.label} {field.required && <span style={{ color: '#f87171' }}>*</span>}
-                    </label>
-                    <input 
-                      type={field.type}
-                      required={field.required}
-                      placeholder={field.placeholder || ''}
-                      value={formDataState[field.id] || ''}
-                      onChange={(e) => setFormDataState({ ...formDataState, [field.id]: e.target.value })}
-                      style={{ width: '100%', padding: '0.6rem 0.8rem', background: 'rgba(15, 23, 42, 0.8)', border: '1px solid rgba(255, 255, 255, 0.15)', borderRadius: '8px', color: '#fff', outline: 'none' }}
-                    />
-                  </div>
-                ))}
-
-                <button 
-                  type="submit"
-                  style={{ width: '100%', padding: '0.75rem', background: '#34d399', color: '#070b14', border: 'none', borderRadius: '8px', cursor: 'pointer', fontWeight: 800, fontSize: '1rem', marginTop: '0.5rem' }}
-                >
-                  Submit Form Application
-                </button>
-              </form>
-            ) : (
-              <div style={{ textAlign: 'center', padding: '1.5rem 0' }}>
-                <div style={{ fontSize: '3rem' }}>🎉</div>
-                <h3 style={{ color: '#34d399', margin: '0.75rem 0' }}>Application Submitted Successfully!</h3>
-                <p style={{ fontSize: '0.9rem', color: '#cbd5e1' }}>
-                  Reference Number: <strong>RAJ-2026-{Math.floor(100000 + Math.random() * 900000)}</strong>
-                </p>
-                <div style={{ marginTop: '1.5rem' }}>
-                  <button onClick={() => setSelectedForm(null)} style={{ padding: '0.6rem 1.5rem', background: '#38bdf8', color: '#070b14', border: 'none', borderRadius: '8px', cursor: 'pointer', fontWeight: 800 }}>
-                    Close Wizard
-                  </button>
-                </div>
-              </div>
-            )}
-          </div>
-        </div>
-      )}
+      </section>
     </div>
   );
 }

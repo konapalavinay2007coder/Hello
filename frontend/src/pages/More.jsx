@@ -1,7 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { getDirectory } from '../services/api';
+import { useLanguage } from '../context/LanguageContext';
+import { translations } from '../data/translations';
 
 export default function More() {
+  const { language, setLanguage, fontSize, setFontSize } = useLanguage();
+  const t = translations[language]?.more || translations.en.more;
+
   const [activeTab, setActiveTab] = useState('directory_help');
   
   // Directory & Help States
@@ -12,8 +17,6 @@ export default function More() {
   const [openFaq, setOpenFaq] = useState(null);
 
   // Settings States
-  const [fontSize, setFontSize] = useState('16');
-  const [defaultLang, setDefaultLang] = useState('hi');
   const [offlineStatus, setOfflineStatus] = useState('Enabled (Pre-seeded)');
 
   const fetchDirectory = async () => {
@@ -55,73 +58,72 @@ export default function More() {
   };
 
   return (
-    <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '1.5rem', fontFamily: 'var(--font-family)' }}>
+    <div style={{ width: '100%', padding: '2rem 3rem 5rem 3rem', fontFamily: "'Atkinson Hyperlegible', sans-serif" }}>
       
-      {/* Page Header */}
+      {/* Header */}
       <div style={{ marginBottom: '2rem' }}>
-        <div className="glass-pill" style={{ marginBottom: '0.75rem' }}>
-          <span>📌</span>
-          <span>MORE & SYSTEM SETTINGS</span>
-        </div>
-        <h2 style={{ fontSize: '2.2rem', fontWeight: 800, color: '#ffffff', margin: 0, letterSpacing: '-0.5px' }}>
-          Directory, Settings & About hello
-        </h2>
-        <p style={{ color: '#94a3b8', margin: '0.4rem 0 0 0', fontSize: '1rem' }}>
-          Access contact directory, helplines, system settings, accessibility tools, and project architecture.
-        </p>
+        {t.badge && (
+          <div style={{
+            display: 'inline-flex',
+            alignItems: 'center',
+            gap: '0.4rem',
+            background: 'rgba(2, 132, 199, 0.12)',
+            border: '1px solid rgba(2, 132, 199, 0.3)',
+            borderRadius: '9999px',
+            padding: '0.35rem 1rem',
+            color: '#4D8FC7',
+            fontSize: '0.85rem',
+            fontWeight: 700,
+            marginBottom: '1rem'
+          }}>
+            <span>{t.badge}</span>
+          </div>
+        )}
+
+        <h1 style={{ fontSize: 'clamp(2.2rem, 4vw, 3.5rem)', fontWeight: 800, color: '#062C4D', margin: 0, letterSpacing: '-1px' }}>
+          {t.title}
+        </h1>
+        {t.subtitle && (
+          <p style={{ color: '#4D8FC7', margin: '0.5rem 0 0 0', fontSize: '1.1rem', fontWeight: 500 }}>
+            {t.subtitle}
+          </p>
+        )}
       </div>
 
       {/* Tab Switcher */}
-      <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap', marginBottom: '2rem' }}>
+      <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap', marginBottom: '2.5rem' }}>
         <button
           onClick={() => setActiveTab('directory_help')}
           style={{
-            padding: '0.65rem 1.5rem',
-            fontSize: '0.95rem',
-            fontWeight: 700,
-            background: activeTab === 'directory_help' ? 'linear-gradient(135deg, #2563eb, #38bdf8)' : 'rgba(15, 23, 42, 0.8)',
-            color: activeTab === 'directory_help' ? '#ffffff' : '#94a3b8',
-            border: activeTab === 'directory_help' ? 'none' : '1px solid rgba(255, 255, 255, 0.12)',
+            padding: '0.75rem 1.8rem',
+            fontSize: '0.98rem',
+            fontWeight: 800,
+            background: activeTab === 'directory_help' ? '#0284c7' : 'rgba(255, 255, 255, 0.8)',
+            color: activeTab === 'directory_help' ? '#ffffff' : '#062C4D',
+            border: activeTab === 'directory_help' ? 'none' : '1px solid #cbd5e1',
             borderRadius: '9999px',
             cursor: 'pointer',
-            boxShadow: activeTab === 'directory_help' ? '0 4px 15px rgba(56, 189, 248, 0.3)' : 'none'
+            boxShadow: activeTab === 'directory_help' ? '0 4px 15px rgba(2, 132, 199, 0.35)' : 'none'
           }}
         >
-          📞 Directory & Helpline
+          {t.tab1}
         </button>
 
         <button
           onClick={() => setActiveTab('settings')}
           style={{
-            padding: '0.65rem 1.5rem',
-            fontSize: '0.95rem',
-            fontWeight: 700,
-            background: activeTab === 'settings' ? 'linear-gradient(135deg, #2563eb, #38bdf8)' : 'rgba(15, 23, 42, 0.8)',
-            color: activeTab === 'settings' ? '#ffffff' : '#94a3b8',
-            border: activeTab === 'settings' ? 'none' : '1px solid rgba(255, 255, 255, 0.12)',
+            padding: '0.75rem 1.8rem',
+            fontSize: '0.98rem',
+            fontWeight: 800,
+            background: activeTab === 'settings' ? '#0284c7' : 'rgba(255, 255, 255, 0.8)',
+            color: activeTab === 'settings' ? '#ffffff' : '#062C4D',
+            border: activeTab === 'settings' ? 'none' : '1px solid #cbd5e1',
             borderRadius: '9999px',
             cursor: 'pointer',
-            boxShadow: activeTab === 'settings' ? '0 4px 15px rgba(56, 189, 248, 0.3)' : 'none'
+            boxShadow: activeTab === 'settings' ? '0 4px 15px rgba(2, 132, 199, 0.35)' : 'none'
           }}
         >
-          ⚙️ Accessibility & Settings
-        </button>
-
-        <button
-          onClick={() => setActiveTab('about')}
-          style={{
-            padding: '0.65rem 1.5rem',
-            fontSize: '0.95rem',
-            fontWeight: 700,
-            background: activeTab === 'about' ? 'linear-gradient(135deg, #2563eb, #38bdf8)' : 'rgba(15, 23, 42, 0.8)',
-            color: activeTab === 'about' ? '#ffffff' : '#94a3b8',
-            border: activeTab === 'about' ? 'none' : '1px solid rgba(255, 255, 255, 0.12)',
-            borderRadius: '9999px',
-            cursor: 'pointer',
-            boxShadow: activeTab === 'about' ? '0 4px 15px rgba(56, 189, 248, 0.3)' : 'none'
-          }}
-        >
-          ℹ️ About hello POC
+          {t.tab2}
         </button>
       </div>
 
@@ -129,30 +131,53 @@ export default function More() {
       {activeTab === 'directory_help' && (
         <div>
           {/* Toll-Free Banner */}
-          <div className="glass-panel" style={{ padding: '1.5rem', marginBottom: '2rem', display: 'flex', flexWrap: 'wrap', gap: '1rem', justifyContent: 'space-between', alignItems: 'center', borderColor: 'rgba(56, 189, 248, 0.3)' }}>
+          <div style={{
+            background: '#ffffff',
+            border: '1px solid #cbd5e1',
+            borderRadius: '20px',
+            padding: '1.75rem',
+            marginBottom: '2.5rem',
+            display: 'flex',
+            flexWrap: 'wrap',
+            gap: '1.5rem',
+            justify: 'space-between',
+            alignItems: 'center',
+            boxShadow: '0 8px 30px rgba(2, 132, 199, 0.08)'
+          }}>
             <div>
-              <h3 style={{ margin: 0, color: '#38bdf8', fontSize: '1.25rem' }}>🌾 Kisan Call Centre (Government Helpline)</h3>
-              <p style={{ margin: '0.3rem 0 0 0', fontSize: '0.9rem', color: '#94a3b8' }}>Free agricultural advice in Hindi, Marathi, Rajasthani, and 19 other regional languages.</p>
+              <h3 style={{ margin: 0, color: '#062C4D', fontSize: '1.4rem', fontWeight: 800 }}>{t.kccTitle}</h3>
+              <p style={{ margin: '0.4rem 0 0 0', fontSize: '0.95rem', color: '#4D8FC7' }}>{t.kccSub}</p>
             </div>
             <a 
               href="tel:18001801551" 
-              style={{ padding: '0.75rem 1.5rem', background: '#38bdf8', color: '#070b14', textDecoration: 'none', borderRadius: '8px', fontWeight: 800, fontSize: '1rem' }}
+              style={{ padding: '0.85rem 1.8rem', background: '#0284c7', color: '#ffffff', textDecoration: 'none', borderRadius: '10px', fontWeight: 800, fontSize: '1.05rem', boxShadow: '0 4px 15px rgba(2, 132, 199, 0.35)' }}
             >
-              📞 Call 1800-180-1551
+              {t.callBtn}
             </a>
           </div>
 
           {/* Infrastructure Directory Search */}
-          <section style={{ marginBottom: '2.5rem' }}>
-            <h3 style={{ fontSize: '1.4rem', fontWeight: 700, color: '#38bdf8', marginBottom: '1.25rem', borderLeft: '4px solid #38bdf8', paddingLeft: '0.75rem' }}>
-              Search Nearby Services Directory (KCC / CSC / SHG)
-            </h3>
+          <section style={{ marginBottom: '3.5rem' }}>
+            <h2 style={{ fontSize: '1.5rem', fontWeight: 800, color: '#062C4D', marginBottom: '1.5rem', borderLeft: '4px solid #0284c7', paddingLeft: '0.75rem' }}>
+              {t.dirTitle}
+            </h2>
 
-            <div className="glass-panel" style={{ padding: '1rem', marginBottom: '1.25rem', display: 'flex', gap: '1rem', flexWrap: 'wrap', alignItems: 'center' }}>
+            <div style={{
+              background: '#ffffff',
+              border: '1px solid #cbd5e1',
+              borderRadius: '20px',
+              padding: '1.25rem 1.5rem',
+              marginBottom: '1.5rem',
+              display: 'flex',
+              gap: '1.5rem',
+              flexWrap: 'wrap',
+              alignItems: 'center',
+              boxShadow: '0 8px 30px rgba(2, 132, 199, 0.08)'
+            }}>
               <div>
-                <label style={{ fontSize: '0.85rem', fontWeight: 700, color: '#94a3b8' }}>Filter by Type: </label>
-                <select value={type} onChange={(e) => setType(e.target.value)} style={{ padding: '0.4rem 0.8rem', background: 'rgba(15, 23, 42, 0.8)', border: '1px solid rgba(255, 255, 255, 0.15)', borderRadius: '8px', color: '#fff', outline: 'none' }}>
-                  <option value="">All Types</option>
+                <label style={{ fontSize: '0.88rem', fontWeight: 700, color: '#062C4D' }}>{t.filterType} </label>
+                <select value={type} onChange={(e) => setType(e.target.value)} style={{ padding: '0.6rem 0.9rem', background: '#f8fafc', border: '1px solid #cbd5e1', borderRadius: '10px', color: '#062C4D', outline: 'none', marginLeft: '0.4rem', fontFamily: 'inherit' }}>
+                  <option value="">{t.allTypes}</option>
                   <option value="KCC">KCC (Kisan Call Centre)</option>
                   <option value="CSC">CSC (Common Service Centre)</option>
                   <option value="SHG">SHG (Self Help Group)</option>
@@ -160,41 +185,47 @@ export default function More() {
               </div>
 
               <div>
-                <label style={{ fontSize: '0.85rem', fontWeight: 700, color: '#94a3b8' }}>District: </label>
+                <label style={{ fontSize: '0.88rem', fontWeight: 700, color: '#062C4D' }}>District: </label>
                 <input
                   type="text"
                   placeholder="e.g. Nagaur, Jaipur, Pune"
                   value={district}
                   onChange={(e) => setDistrict(e.target.value)}
-                  style={{ padding: '0.4rem 0.8rem', background: 'rgba(15, 23, 42, 0.8)', border: '1px solid rgba(255, 255, 255, 0.15)', borderRadius: '8px', color: '#fff', outline: 'none' }}
+                  style={{ padding: '0.6rem 0.9rem', background: '#f8fafc', border: '1px solid #cbd5e1', borderRadius: '10px', color: '#062C4D', outline: 'none', marginLeft: '0.4rem', fontFamily: 'inherit' }}
                 />
               </div>
 
-              <button onClick={fetchDirectory} style={{ padding: '0.5rem 1.25rem', background: '#38bdf8', color: '#070b14', border: 'none', borderRadius: '8px', cursor: 'pointer', fontWeight: 800 }}>
-                Search Directory
+              <button onClick={fetchDirectory} style={{ padding: '0.65rem 1.6rem', background: '#0284c7', color: '#ffffff', border: 'none', borderRadius: '10px', cursor: 'pointer', fontWeight: 800 }}>
+                {t.searchBtn}
               </button>
             </div>
 
-            {loading ? <p style={{ color: '#94a3b8' }}>Loading directory entries...</p> : (
-              <div className="glass-panel" style={{ overflowX: 'auto' }}>
-                <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.9rem', textAlign: 'left' }}>
+            {loading ? <p style={{ color: '#4D8FC7' }}>Loading directory entries...</p> : (
+              <div style={{
+                background: '#ffffff',
+                border: '1px solid #cbd5e1',
+                borderRadius: '20px',
+                overflowX: 'auto',
+                boxShadow: '0 8px 30px rgba(2, 132, 199, 0.08)'
+              }}>
+                <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.95rem', textAlign: 'left' }}>
                   <thead>
-                    <tr style={{ background: 'rgba(30, 41, 59, 0.9)', color: '#38bdf8', borderBottom: '1px solid rgba(255,255,255,0.1)' }}>
-                      <th style={{ padding: '1rem' }}>Type</th>
-                      <th style={{ padding: '1rem' }}>Name</th>
-                      <th style={{ padding: '1rem' }}>Phone / Helpline</th>
-                      <th style={{ padding: '1rem' }}>Address</th>
-                      <th style={{ padding: '1rem' }}>District</th>
+                    <tr style={{ background: '#e0f2fe', color: '#062C4D', borderBottom: '1px solid #cbd5e1' }}>
+                      <th style={{ padding: '1.1rem' }}>Type</th>
+                      <th style={{ padding: '1.1rem' }}>Name</th>
+                      <th style={{ padding: '1.1rem' }}>Phone / Helpline</th>
+                      <th style={{ padding: '1.1rem' }}>Address</th>
+                      <th style={{ padding: '1.1rem' }}>District</th>
                     </tr>
                   </thead>
                   <tbody>
                     {entries.map((item) => (
-                      <tr key={item._id} style={{ borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
-                        <td style={{ padding: '1rem', color: '#ffffff', fontWeight: 700 }}>{item.type}</td>
-                        <td style={{ padding: '1rem', color: '#cbd5e1' }}>{item.name}</td>
-                        <td style={{ padding: '1rem' }}><a href={`tel:${item.phone}`} style={{ color: '#38bdf8', fontWeight: 700, textDecoration: 'none' }}>{item.phone}</a></td>
-                        <td style={{ padding: '1rem', color: '#cbd5e1' }}>{item.address}</td>
-                        <td style={{ padding: '1rem', color: '#cbd5e1' }}>{item.district} ({item.state})</td>
+                      <tr key={item._id} style={{ borderBottom: '1px solid #e2e8f0' }}>
+                        <td style={{ padding: '1.1rem', color: '#062C4D', fontWeight: 800 }}>{item.type}</td>
+                        <td style={{ padding: '1.1rem', color: '#4D8FC7' }}>{item.name}</td>
+                        <td style={{ padding: '1.1rem' }}><a href={`tel:${item.phone}`} style={{ color: '#0284c7', fontWeight: 800, textDecoration: 'none' }}>{item.phone}</a></td>
+                        <td style={{ padding: '1.1rem', color: '#4D8FC7' }}>{item.address}</td>
+                        <td style={{ padding: '1.1rem', color: '#4D8FC7' }}>{item.district} ({item.state})</td>
                       </tr>
                     ))}
                   </tbody>
@@ -205,22 +236,27 @@ export default function More() {
 
           {/* FAQs Accordion */}
           <section>
-            <h3 style={{ fontSize: '1.4rem', fontWeight: 700, color: '#38bdf8', marginBottom: '1.25rem', borderLeft: '4px solid #38bdf8', paddingLeft: '0.75rem' }}>
-              Frequently Asked Questions
-            </h3>
+            <h2 style={{ fontSize: '1.5rem', fontWeight: 800, color: '#062C4D', marginBottom: '1.5rem', borderLeft: '4px solid #0284c7', paddingLeft: '0.75rem' }}>
+              {t.faqsTitle}
+            </h2>
             
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.85rem' }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
               {faqs.map((faq, idx) => (
-                <div key={idx} className="glass-panel" style={{ overflow: 'hidden' }}>
+                <div key={idx} style={{
+                  background: '#ffffff',
+                  border: '1px solid #cbd5e1',
+                  borderRadius: '14px',
+                  overflow: 'hidden'
+                }}>
                   <button 
                     onClick={() => setOpenFaq(openFaq === idx ? null : idx)}
-                    style={{ width: '100%', textAlign: 'left', padding: '1rem 1.25rem', background: 'transparent', border: 'none', cursor: 'pointer', fontWeight: 700, fontSize: '0.95rem', color: '#ffffff', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}
+                    style={{ width: '100%', textAlign: 'left', padding: '1.1rem 1.4rem', background: 'transparent', border: 'none', cursor: 'pointer', fontWeight: 800, fontSize: '1rem', color: '#062C4D', display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontFamily: 'inherit' }}
                   >
                     <span>{faq.q}</span>
-                    <span style={{ color: '#38bdf8' }}>{openFaq === idx ? '▲' : '▼'}</span>
+                    <span style={{ color: '#0284c7' }}>{openFaq === idx ? '▲' : '▼'}</span>
                   </button>
                   {openFaq === idx && (
-                    <div style={{ padding: '0 1.25rem 1.25rem 1.25rem', color: '#cbd5e1', fontSize: '0.9rem', lineHeight: 1.6, borderTop: '1px solid rgba(255,255,255,0.06)' }}>
+                    <div style={{ padding: '0 1.4rem 1.4rem 1.4rem', color: '#4D8FC7', fontSize: '0.95rem', lineHeight: 1.6, borderTop: '1px solid #f1f5f9' }}>
                       {faq.a}
                     </div>
                   )}
@@ -233,16 +269,22 @@ export default function More() {
 
       {/* SECTION 2: Accessibility & Settings */}
       {activeTab === 'settings' && (
-        <div style={{ maxWidth: '600px' }}>
-          <div className="glass-panel" style={{ padding: '1.75rem' }}>
-            <h3 style={{ margin: '0 0 1.25rem 0', color: '#38bdf8', fontSize: '1.3rem' }}>
-              System Settings & Accessibility
-            </h3>
+        <div style={{ maxWidth: '650px' }}>
+          <div style={{
+            background: '#ffffff',
+            border: '1px solid #cbd5e1',
+            borderRadius: '20px',
+            padding: '2rem',
+            boxShadow: '0 8px 30px rgba(2, 132, 199, 0.08)'
+          }}>
+            <h2 style={{ margin: '0 0 1.5rem 0', color: '#062C4D', fontSize: '1.5rem', fontWeight: 800 }}>
+              {t.settingsTitle}
+            </h2>
 
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '1.75rem' }}>
               <div>
-                <label style={{ display: 'block', fontWeight: 700, color: '#ffffff', marginBottom: '0.4rem' }}>
-                  🔤 Base Font Size: {fontSize}px
+                <label style={{ display: 'block', fontWeight: 800, color: '#062C4D', marginBottom: '0.5rem' }}>
+                  {t.fontSizeLabel} {fontSize}px
                 </label>
                 <input 
                   type="range" 
@@ -252,59 +294,40 @@ export default function More() {
                   onChange={(e) => setFontSize(e.target.value)}
                   style={{ width: '100%' }}
                 />
-                <small style={{ color: '#94a3b8' }}>Adjust text size for low-vision rural users.</small>
+                <small style={{ color: '#4D8FC7' }}>Adjust text size for low-vision rural users.</small>
               </div>
 
               <div>
-                <label style={{ display: 'block', fontWeight: 700, color: '#ffffff', marginBottom: '0.4rem' }}>
-                  🌐 Default Language Preference
+                <label style={{ display: 'block', fontWeight: 800, color: '#062C4D', marginBottom: '0.5rem' }}>
+                  {t.langPrefLabel}
                 </label>
                 <select 
-                  value={defaultLang} 
-                  onChange={(e) => setDefaultLang(e.target.value)}
-                  style={{ width: '100%', padding: '0.6rem 0.8rem', background: 'rgba(15, 23, 42, 0.8)', border: '1px solid rgba(255, 255, 255, 0.15)', borderRadius: '8px', color: '#fff', outline: 'none' }}
+                  value={language} 
+                  onChange={(e) => setLanguage(e.target.value)}
+                  style={{ width: '100%', padding: '0.75rem 1rem', background: '#f8fafc', border: '1px solid #cbd5e1', borderRadius: '10px', color: '#062C4D', outline: 'none', fontFamily: 'inherit' }}
                 >
-                  <option value="hi" style={{ background: '#0f172a', color: '#fff' }}>हिंदी (Hindi)</option>
-                  <option value="en" style={{ background: '#0f172a', color: '#fff' }}>English</option>
-                  <option value="mr" style={{ background: '#0f172a', color: '#fff' }}>मराठी (Marathi)</option>
+                  <option value="en">English 🇬🇧</option>
+                  <option value="hi">हिंदी (Hindi) 🇮🇳</option>
+                  <option value="mr">मराठी (Marathi) 🇮🇳</option>
                 </select>
               </div>
 
               <div>
-                <label style={{ display: 'block', fontWeight: 700, color: '#ffffff', marginBottom: '0.4rem' }}>
-                  📶 Offline Advisory Cache Status
+                <label style={{ display: 'block', fontWeight: 800, color: '#062C4D', marginBottom: '0.5rem' }}>
+                  {t.cacheStatusLabel}
                 </label>
-                <p style={{ margin: '0 0 0.75rem 0', color: '#34d399', fontWeight: 800 }}>
+                <p style={{ margin: '0 0 0.85rem 0', color: '#0284c7', fontWeight: 800 }}>
                   {offlineStatus}
                 </p>
                 <button 
                   onClick={handleClearCache}
-                  style={{ padding: '0.6rem 1.25rem', background: 'rgba(239, 68, 68, 0.2)', border: '1px solid rgba(239, 68, 68, 0.4)', color: '#f87171', borderRadius: '8px', cursor: 'pointer', fontWeight: 700 }}
+                  style={{ padding: '0.7rem 1.4rem', background: '#f8fafc', border: '1px solid #cbd5e1', color: '#062C4D', borderRadius: '10px', cursor: 'pointer', fontWeight: 800 }}
                 >
-                  Clear Offline Cache Memory
+                  {t.clearCacheBtn}
                 </button>
               </div>
             </div>
           </div>
-        </div>
-      )}
-
-      {/* SECTION 3: About hello POC */}
-      {activeTab === 'about' && (
-        <div className="glass-panel" style={{ padding: '2rem' }}>
-          <h3 style={{ margin: '0 0 0.75rem 0', color: '#ffffff', fontSize: '1.4rem' }}>🌾 About hello v2.1 (POC System Architecture)</h3>
-          
-          <p style={{ lineHeight: 1.6, color: '#cbd5e1', fontSize: '1rem' }}>
-            <strong>hello</strong> is a human-centered, voice-first AI advisory platform designed for rural India. Built specifically to eliminate barriers of digital literacy and poor 2G connectivity.
-          </p>
-
-          <h4 style={{ color: '#38bdf8', marginTop: '1.5rem', fontSize: '1.15rem' }}>Key Architectural Highlights:</h4>
-          <ul style={{ lineHeight: 1.7, color: '#e2e8f0', paddingLeft: '1.2rem', marginTop: '0.5rem' }}>
-            <li><strong>Multi-Model AI Resilience:</strong> Primary Gemini 2.5/2.0/1.5 Flash models with automatic 770ms fallback to Groq Llama-3.3 70B (`TEXT_API`).</li>
-            <li><strong>Privacy First:</strong> Automated regex middleware masking Aadhaar, phone numbers, and bank account numbers prior to LLM submission.</li>
-            <li><strong>Offline Capability:</strong> Service worker & localStorage caching allows full advisory playback during signal loss.</li>
-            <li><strong>Real-Time Government APIs:</strong> Direct live queries to Agmarknet data.gov.in and Open-Meteo weather geocoding.</li>
-          </ul>
         </div>
       )}
     </div>
