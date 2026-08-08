@@ -369,5 +369,41 @@ export const colleges = [
     topRecruiters: 'Cognizant, Accenture, LTI, Persistent',
     location: 'Vadgaon Budruk, Pune',
     hostel: 'Available'
+  },
+  {
+    id: 'gce_amravati',
+    name: 'Government College of Engineering Amravati (GCOEA)',
+    type: 'Government Autonomous',
+    fees: '₹76,000 / year',
+    concession: '₹38,000 via EBC',
+    cutoff: '94.8 Percentile (MHT-CET)',
+    placementRate: '87%',
+    topRecruiters: 'TCS, Tech Mahindra, L&T Infotech',
+    location: 'VMV Road, Amravati',
+    hostel: 'Available'
+  },
+  {
+    id: 'gce_jalgaon',
+    name: 'Government College of Engineering Jalgaon',
+    type: 'Government Autonomous',
+    fees: '₹74,000 / year',
+    concession: '₹37,000 via EBC',
+    cutoff: '92.3 Percentile (MHT-CET)',
+    placementRate: '84%',
+    topRecruiters: 'Jain Irrigation, Wipro, Infosys',
+    location: 'NH-6, Jalgaon',
+    hostel: 'Available'
+  },
+  {
+    id: 'dypatil_pune',
+    name: 'D.Y. Patil College of Engineering Akurdi Pune',
+    type: 'Private Autonomous',
+    fees: '₹1,30,000 / year',
+    concession: '₹65,000 via EBC',
+    cutoff: '95.1 Percentile (MHT-CET)',
+    placementRate: '90%',
+    topRecruiters: 'Veritas, Hexaware, Capgemini',
+    location: 'Akurdi, Pune',
+    hostel: 'Available'
   }
 ];
