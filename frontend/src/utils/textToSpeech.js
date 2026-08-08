@@ -4,7 +4,12 @@
  */
 
 let activeAudio = null;
-const rawUrl = import.meta.env.VITE_API_BASE_URL || import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+const isProductionDomain = typeof window !== 'undefined' && window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1';
+const defaultFallback = isProductionDomain 
+  ? 'https://hello-production-918b.up.railway.app/api' 
+  : 'http://localhost:5000/api';
+
+const rawUrl = import.meta.env.VITE_API_BASE_URL || import.meta.env.VITE_API_URL || defaultFallback;
 const API_BASE_URL = rawUrl.endsWith('/api') ? rawUrl : `${rawUrl.replace(/\/$/, '')}/api`;
 
 /**
