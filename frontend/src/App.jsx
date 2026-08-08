@@ -16,87 +16,140 @@ function NavigationBar() {
   const { language, setLanguage } = useLanguage();
   const t = translations[language]?.nav || translations.en.nav;
 
+  const navLinks = [
+    { to: '/', label: 'Home' },
+    { to: '/student', label: 'Student' },
+    { to: '/entrepreneur', label: 'Business' },
+    { to: '/dashboard', label: 'Mandi' },
+  ];
+
+  const isActive = (to) => {
+    if (to === '/') return path === '/';
+    return path.startsWith(to);
+  };
+
   return (
     <header style={{
       position: 'sticky',
       top: 0,
       zIndex: 1000,
       width: '100%',
-      background: 'transparent',
-      padding: '1rem 3rem',
-      borderBottom: 'none',
-      boxShadow: 'none'
+      background: 'rgba(207, 231, 251, 0.85)',
+      backdropFilter: 'blur(16px)',
+      WebkitBackdropFilter: 'blur(16px)',
+      borderBottom: '1px solid rgba(2, 132, 199, 0.15)',
+      padding: '0.65rem 2rem',
+      boxShadow: '0 4px 20px rgba(2, 132, 199, 0.08)'
     }}>
       <div style={{
         width: '100%',
-        display: 'grid',
-        gridTemplateColumns: '1fr auto 1fr',
+        maxWidth: '1400px',
+        margin: '0 auto',
+        display: 'flex',
         alignItems: 'center',
-        gap: '1.5rem'
+        justifyContent: 'space-between',
+        gap: '1rem'
       }}>
-        {/* Left Slot: Logo */}
-        <div style={{ display: 'flex', justifyContent: 'flex-start' }}>
-          <Link to="/" style={{ textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
-            <div style={{
-              background: 'linear-gradient(135deg, #0284c7, #1d4ed8)',
-              width: '38px',
-              height: '38px',
-              borderRadius: '10px',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              color: '#fff',
-              fontSize: '1rem',
-              fontWeight: 800,
-              boxShadow: '0 4px 14px rgba(2, 132, 199, 0.35)'
-            }}>
-              H
-            </div>
-            <span style={{ fontSize: '1.65rem', fontWeight: 800, color: '#062C4D', letterSpacing: '-0.5px' }}>
-              hello
-            </span>
-          </Link>
-        </div>
 
-        {/* Center Slot: Prominent Centered "Try Voice AI" Button */}
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+        {/* Left: Logo */}
+        <Link to="/" style={{ textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '0.55rem', flexShrink: 0 }}>
+          <div style={{
+            background: 'linear-gradient(135deg, #0284c7, #1d4ed8)',
+            width: '36px',
+            height: '36px',
+            borderRadius: '10px',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            color: '#fff',
+            fontSize: '0.95rem',
+            fontWeight: 800,
+            boxShadow: '0 4px 14px rgba(2, 132, 199, 0.35)'
+          }}>
+            H
+          </div>
+          <span style={{ fontSize: '1.5rem', fontWeight: 800, color: '#062C4D', letterSpacing: '-0.5px' }}>
+            hello
+          </span>
+        </Link>
+
+        {/* Center: Nav Links */}
+        <nav style={{
+          display: 'flex',
+          alignItems: 'center',
+          gap: '0.25rem',
+          background: 'rgba(255, 255, 255, 0.6)',
+          borderRadius: '12px',
+          padding: '0.3rem',
+          border: '1px solid rgba(2, 132, 199, 0.12)'
+        }}>
+          {navLinks.map((link) => (
+            <Link
+              key={link.to}
+              to={link.to}
+              style={{
+                textDecoration: 'none',
+                padding: '0.45rem 1rem',
+                borderRadius: '8px',
+                fontSize: '0.85rem',
+                fontWeight: isActive(link.to) ? 800 : 600,
+                color: isActive(link.to) ? '#ffffff' : '#062C4D',
+                background: isActive(link.to)
+                  ? 'linear-gradient(135deg, #0284c7, #1d4ed8)'
+                  : 'transparent',
+                boxShadow: isActive(link.to)
+                  ? '0 4px 12px rgba(2, 132, 199, 0.3)'
+                  : 'none',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '0.35rem',
+                transition: 'all 0.2s ease',
+                whiteSpace: 'nowrap'
+              }}
+            >
+              <span>{link.label}</span>
+            </Link>
+          ))}
+        </nav>
+
+        {/* Right: Hello AI + Settings */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', flexShrink: 0 }}>
           <Link to="/advisory" style={{
             background: 'linear-gradient(135deg, #0284c7, #1d4ed8)',
             color: '#ffffff',
             textDecoration: 'none',
-            padding: '0.7rem 1.8rem',
+            padding: '0.55rem 1.4rem',
             borderRadius: '9999px',
             fontWeight: 800,
-            fontSize: '0.98rem',
-            boxShadow: '0 6px 20px rgba(2, 132, 199, 0.35)',
+            fontSize: '0.88rem',
+            boxShadow: '0 4px 16px rgba(2, 132, 199, 0.3)',
             display: 'flex',
             alignItems: 'center',
-            gap: '0.5rem',
-            transition: 'all 0.2s ease'
+            gap: '0.4rem',
+            transition: 'all 0.2s ease',
+            whiteSpace: 'nowrap'
           }}>
             <span>{t.tryVoice}</span>
             <span>↗</span>
           </Link>
-        </div>
 
-        {/* Right Slot: Settings Button */}
-        <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
           <Link to="/more" style={{
-            background: '#ffffff',
-            border: '1.5px solid #0284c7',
+            background: 'rgba(255, 255, 255, 0.8)',
+            border: '1.5px solid rgba(2, 132, 199, 0.3)',
             borderRadius: '9999px',
-            padding: '0.45rem 1.25rem',
+            padding: '0.45rem 1rem',
             textDecoration: 'none',
             color: '#062C4D',
-            fontWeight: 800,
-            fontSize: '0.88rem',
+            fontWeight: 700,
+            fontSize: '0.85rem',
             display: 'flex',
             alignItems: 'center',
-            gap: '0.4rem',
-            boxShadow: '0 2px 8px rgba(2, 132, 199, 0.15)',
-            transition: 'all 0.2s ease'
+            gap: '0.35rem',
+            boxShadow: '0 2px 8px rgba(2, 132, 199, 0.1)',
+            transition: 'all 0.2s ease',
+            whiteSpace: 'nowrap'
           }}>
-            <span style={{ fontSize: '0.95rem' }}>⚙️</span>
+            <span style={{ fontSize: '0.9rem' }}>⚙️</span>
             <span>Settings</span>
           </Link>
         </div>
