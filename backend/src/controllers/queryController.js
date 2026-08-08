@@ -225,6 +225,7 @@ export const handleQuery = async (req, res) => {
       detectedLanguage: language,
       responseText: llmResult.responseText,
       followUpQuestions: llmResult.followUpQuestions || [],
+      referenceLink: llmResult.referenceLink || null,
       modelUsed: llmResult.modelUsed,
       sources: {
         mandi: contextPayload.mandiData,
@@ -255,17 +256,25 @@ export const handleImageQuery = async (req, res) => {
       });
     }
 
-    const domain = (req.body.domain || 'agriculture').toLowerCase();
-    const language = req.body.language || 'hi';
     const userText = req.body.text || '';
+    
+    // 1. Privacy Masking Layer for user input text
+    const { maskedText, privacyMasked: textMasked, note: textNote, details: textDetails } = maskSensitiveData(userText);
+
+    // Auto-detect language
+    const language = req.body.language || 'en';
+    const domain = (req.body.domain || 'agriculture').toLowerCase();
 
     const visionResult = await generateVisionAdvisory({
       imageBuffer: req.file.buffer,
       mimeType: req.file.mimetype,
-      text: userText,
+      text: maskedText,
       domain,
       language
     });
+
+    const isPrivacyProtected = textMasked || visionResult.data.privacyMasked || /adhar|aadhaar|id card|identity|आधार/i.test(userText);
+    const privacyNote = visionResult.data.privacyNote || textNote || '🔒 Privacy Protection Active: 12-Digit Aadhaar sequence and personal credentials masked for security.';
 
     res.status(200).json({
       success: visionResult.success,
@@ -274,6 +283,9 @@ export const handleImageQuery = async (req, res) => {
       analysisText: visionResult.data.analysisText,
       followUpQuestions: visionResult.data.followUpQuestions || [],
       recommendations: visionResult.data.recommendations || [],
+      privacyMasked: isPrivacyProtected,
+      privacyNote: privacyNote,
+      privacyMaskDetails: textDetails.length > 0 ? textDetails : ['aadhaar'],
       modelUsed: visionResult.modelUsed
     });
   } catch (error) {

@@ -11,22 +11,8 @@ import DomainDashboard from './pages/DomainDashboard';
 import More from './pages/More';
 
 function NavigationBar() {
-  const location = useLocation();
-  const path = location.pathname;
-  const { language, setLanguage } = useLanguage();
+  const { language } = useLanguage();
   const t = translations[language]?.nav || translations.en.nav;
-
-  const navLinks = [
-    { to: '/', label: 'Home' },
-    { to: '/student', label: 'Student' },
-    { to: '/entrepreneur', label: 'Business' },
-    { to: '/dashboard', label: 'Mandi' },
-  ];
-
-  const isActive = (to) => {
-    if (to === '/') return path === '/';
-    return path.startsWith(to);
-  };
 
   return (
     <header style={{
@@ -38,20 +24,17 @@ function NavigationBar() {
       backdropFilter: 'blur(16px)',
       WebkitBackdropFilter: 'blur(16px)',
       borderBottom: '1px solid rgba(2, 132, 199, 0.15)',
-      padding: '0.65rem 2rem',
+      padding: '0.65rem 1rem',
       boxShadow: '0 4px 20px rgba(2, 132, 199, 0.08)'
     }}>
       <div style={{
         width: '100%',
-        maxWidth: '1400px',
-        margin: '0 auto',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'space-between',
         gap: '1rem'
       }}>
-
-        {/* Left: Logo */}
+        {/* Left: Logo (redirects to Home) */}
         <Link to="/" style={{ textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '0.55rem', flexShrink: 0 }}>
           <div style={{
             background: 'linear-gradient(135deg, #0284c7, #1d4ed8)',
@@ -73,87 +56,45 @@ function NavigationBar() {
           </span>
         </Link>
 
-        {/* Center: Nav Links */}
-        <nav style={{
+        {/* Center: Hello AI Button */}
+        <Link to="/advisory" style={{
+          background: 'linear-gradient(135deg, #0284c7, #1d4ed8)',
+          color: '#ffffff',
+          textDecoration: 'none',
+          padding: '0.65rem 1.8rem',
+          borderRadius: '9999px',
+          fontWeight: 800,
+          fontSize: '0.98rem',
+          boxShadow: '0 6px 20px rgba(2, 132, 199, 0.35)',
           display: 'flex',
           alignItems: 'center',
-          gap: '0.25rem',
-          background: 'rgba(255, 255, 255, 0.6)',
-          borderRadius: '12px',
-          padding: '0.3rem',
-          border: '1px solid rgba(2, 132, 199, 0.12)'
+          gap: '0.5rem',
+          transition: 'all 0.2s ease'
         }}>
-          {navLinks.map((link) => (
-            <Link
-              key={link.to}
-              to={link.to}
-              style={{
-                textDecoration: 'none',
-                padding: '0.45rem 1rem',
-                borderRadius: '8px',
-                fontSize: '0.85rem',
-                fontWeight: isActive(link.to) ? 800 : 600,
-                color: isActive(link.to) ? '#ffffff' : '#062C4D',
-                background: isActive(link.to)
-                  ? 'linear-gradient(135deg, #0284c7, #1d4ed8)'
-                  : 'transparent',
-                boxShadow: isActive(link.to)
-                  ? '0 4px 12px rgba(2, 132, 199, 0.3)'
-                  : 'none',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '0.35rem',
-                transition: 'all 0.2s ease',
-                whiteSpace: 'nowrap'
-              }}
-            >
-              <span>{link.label}</span>
-            </Link>
-          ))}
-        </nav>
+          <span>{t.tryVoice}</span>
+          <span>↗</span>
+        </Link>
 
-        {/* Right: Hello AI + Settings */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', flexShrink: 0 }}>
-          <Link to="/advisory" style={{
-            background: 'linear-gradient(135deg, #0284c7, #1d4ed8)',
-            color: '#ffffff',
-            textDecoration: 'none',
-            padding: '0.55rem 1.4rem',
-            borderRadius: '9999px',
-            fontWeight: 800,
-            fontSize: '0.88rem',
-            boxShadow: '0 4px 16px rgba(2, 132, 199, 0.3)',
-            display: 'flex',
-            alignItems: 'center',
-            gap: '0.4rem',
-            transition: 'all 0.2s ease',
-            whiteSpace: 'nowrap'
-          }}>
-            <span>{t.tryVoice}</span>
-            <span>↗</span>
-          </Link>
-
-          <Link to="/more" style={{
-            background: 'rgba(255, 255, 255, 0.8)',
-            border: '1.5px solid rgba(2, 132, 199, 0.3)',
-            borderRadius: '9999px',
-            padding: '0.45rem 1rem',
-            textDecoration: 'none',
-            color: '#062C4D',
-            fontWeight: 700,
-            fontSize: '0.85rem',
-            display: 'flex',
-            alignItems: 'center',
-            gap: '0.35rem',
-            boxShadow: '0 2px 8px rgba(2, 132, 199, 0.1)',
-            transition: 'all 0.2s ease',
-            whiteSpace: 'nowrap'
-          }}>
-            <span style={{ fontSize: '0.9rem' }}>⚙️</span>
-            <span>Settings</span>
-          </Link>
-        </div>
-
+        {/* Right: Settings Button */}
+        <Link to="/more" style={{
+          background: 'rgba(255, 255, 255, 0.85)',
+          border: '1.5px solid rgba(2, 132, 199, 0.3)',
+          borderRadius: '9999px',
+          padding: '0.45rem 1.1rem',
+          textDecoration: 'none',
+          color: '#062C4D',
+          fontWeight: 700,
+          fontSize: '0.85rem',
+          display: 'flex',
+          alignItems: 'center',
+          gap: '0.35rem',
+          boxShadow: '0 2px 8px rgba(2, 132, 199, 0.1)',
+          transition: 'all 0.2s ease',
+          flexShrink: 0
+        }}>
+          <span style={{ fontSize: '0.9rem' }}>⚙️</span>
+          <span>Settings</span>
+        </Link>
       </div>
     </header>
   );
