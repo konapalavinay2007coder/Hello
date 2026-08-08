@@ -36,9 +36,53 @@ export const handleQuery = async (req, res) => {
       });
     }
 
-    const domain = (req.body.domain || 'agriculture').toLowerCase();
-    const language = req.body.language || 'hi';
     const userId = req.body.userId || 'anonymous_user';
+
+    // Auto-detect domain from user's query text
+    const detectDomain = (text) => {
+      const lower = text.toLowerCase();
+      
+      // Education keywords (Hindi, English, Marathi)
+      if (/college|school|admission|scholarship|exam|student|degree|university|engineering|medical|board|marks|percentile|12th|10th|jee|neet|mht-cet|प्रवेश|स्कूल|कॉलेज|विद्यार्थी|पढ़ाई|शिक्षा|परीक्षा|छात्रवृत्ति|डिग्री|शाळा|महाविद्यालय|विद्यापीठ|प्रवेश परीक्षा/.test(lower)) {
+        return 'education';
+      }
+      
+      // Business / Schemes keywords
+      if (/loan|mudra|business|startup|entrepreneur|capital|investment|msme|subsidy|registration|gst|udyam|scheme|pmegp|लोन|व्यापार|व्यवसाय|उद्यमी|पूंजी|निवेश|योजना|सब्सिडी|कर्ज|उद्योग/.test(lower)) {
+        return 'schemes';
+      }
+      
+      // Dairy keywords
+      if (/dairy|milk|cattle|buffalo|cow|दूध|गाय|भैंस|डेयरी|पशुपालन|चारा|दुग्ध|गुरे|म्हैस/.test(lower)) {
+        return 'dairy';
+      }
+      
+      // Default to agriculture (farming, mandi, crops, weather)
+      return 'agriculture';
+    };
+
+    const domain = detectDomain(rawText);
+
+    // Auto-detect language from user's input text
+    const detectLanguage = (text) => {
+      const devanagariChars = (text.match(/[\u0900-\u097F]/g) || []).length;
+      const latinChars = (text.match(/[a-zA-Z]/g) || []).length;
+      const totalChars = devanagariChars + latinChars;
+      
+      if (totalChars === 0) return 'en'; // fallback to English
+      
+      // If mostly Devanagari script
+      if (devanagariChars > latinChars) {
+        // Check for Marathi-specific words
+        const marathiMarkers = /माझ|आहे|करा|कसे|काय|शेती|विद्यार्थी|व्यवसाय|मला|तुम्ही|आम्ही|हवे|पाहिजे|कोणत|जिल्हा/i;
+        if (marathiMarkers.test(text)) return 'mr';
+        return 'hi';
+      }
+      
+      return 'en';
+    };
+
+    const language = detectLanguage(rawText);
 
     let location = {};
     if (req.body.location) {

@@ -3,7 +3,7 @@ import React, { createContext, useContext, useState, useEffect } from 'react';
 const LanguageContext = createContext();
 
 export function LanguageProvider({ children }) {
-  const [language, setLanguage] = useState('hi'); // Default Hindi
+  const [language, setLanguage] = useState('en'); // Default English
   const [fontSize, setFontSizeState] = useState(() => {
     return localStorage.getItem('hello_font_size') || '16';
   });

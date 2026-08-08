@@ -493,38 +493,8 @@ export default function AdvisoryWorkspace() {
               <span>New chat</span>
             </button>
 
-            {/* Domain Options */}
-            <div style={{ marginBottom: '1.25rem' }}>
-              <label style={{ fontSize: '0.75rem', color: '#4D8FC7', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.8px', display: 'block', marginBottom: '0.4rem', paddingLeft: '0.2rem' }}>
-                Options
-              </label>
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.4rem' }}>
-                {[
-                  { id: 'agriculture', label: 'Agriculture' },
-                  { id: 'education', label: 'Education' },
-                  { id: 'schemes', label: 'Business' },
-                  { id: 'dairy', label: 'Dairy' }
-                ].map((d) => (
-                  <button
-                    key={d.id}
-                    onClick={() => setDomain(d.id)}
-                    style={{
-                      padding: '0.45rem 0.5rem',
-                      background: domain === d.id ? '#0284c7' : '#f8fafc',
-                      color: domain === d.id ? '#ffffff' : '#062C4D',
-                      border: domain === d.id ? 'none' : '1px solid #cbd5e1',
-                      borderRadius: '8px',
-                      fontSize: '0.8rem',
-                      fontWeight: 800,
-                      cursor: 'pointer',
-                      textAlign: 'center'
-                    }}
-                  >
-                    {d.label}
-                  </button>
-                ))}
-              </div>
-            </div>
+
+
 
             {/* Chats List (ChatGPT Recent History) */}
             <div style={{ flex: 1, overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: '0.35rem', paddingRight: '0.2rem' }}>
