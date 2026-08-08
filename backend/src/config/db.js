@@ -1,8 +1,12 @@
 import mongoose from 'mongoose';
 
 export const connectDB = async () => {
-  try {
-    const conn = await mongoose.connect(process.env.MONGODB_URI, {
+    const mongoUri = process.env.MONGODB_URL || process.env.MONGODB_URI || process.env.MONGO_URI || process.env.MONGO_URL;
+    if (!mongoUri) {
+      console.warn('[MongoDB] Warning: No MongoDB connection URL found in MONGODB_URL, MONGODB_URI, MONGO_URI, or MONGO_URL.');
+      return;
+    }
+    const conn = await mongoose.connect(mongoUri, {
       serverSelectionTimeoutMS: 5000
     });
     console.log(`[MongoDB] Connected: ${conn.connection.host} / Database: ${conn.connection.name}`);
