@@ -18,6 +18,12 @@ export default function StudentHub() {
   const [activeCourse, setActiveCourse] = useState(null);
   const [enrolledMap, setEnrolledMap] = useState({});
 
+  // Page Segmentation state for College Finder (6 layouts per page)
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 6;
+  const totalPages = Math.ceil(colleges.length / itemsPerPage);
+  const paginatedColleges = colleges.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
+
   const sectionContainerRef = useRef(null);
 
   const handleSelectStage = (stageKey) => {
@@ -343,8 +349,9 @@ export default function StudentHub() {
               </p>
             </div>
 
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(440px, 1fr))', gap: '1.75rem' }}>
-              {colleges.map((col) => (
+            {/* 6-Layout Grid per Page */}
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(360px, 1fr))', gap: '1.75rem' }}>
+              {paginatedColleges.map((col) => (
                 <div key={col.id} style={{
                   background: '#ffffff',
                   border: '1px solid #cbd5e1',
@@ -357,26 +364,26 @@ export default function StudentHub() {
                 }}>
                   <div>
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: '0.5rem', marginBottom: '0.75rem' }}>
-                      <h3 style={{ margin: 0, color: '#062C4D', fontSize: '1.3rem', fontWeight: 800 }}>{col.name}</h3>
-                      <span style={{ fontSize: '0.75rem', background: '#f1f5f9', border: '1px solid #cbd5e1', color: '#4D8FC7', padding: '0.2rem 0.55rem', borderRadius: '6px', fontWeight: 700, flexShrink: 0 }}>
+                      <h3 style={{ margin: 0, color: '#062C4D', fontSize: '1.2rem', fontWeight: 800 }}>{col.name}</h3>
+                      <span style={{ fontSize: '0.72rem', background: '#f1f5f9', border: '1px solid #cbd5e1', color: '#4D8FC7', padding: '0.2rem 0.55rem', borderRadius: '6px', fontWeight: 700, flexShrink: 0 }}>
                         {col.type}
                       </span>
                     </div>
 
-                    <p style={{ fontSize: '0.9rem', color: '#4D8FC7', margin: '0 0 1rem 0' }}>
+                    <p style={{ fontSize: '0.88rem', color: '#4D8FC7', margin: '0 0 1rem 0' }}>
                       Location: {col.location}
                     </p>
 
-                    <div style={{ background: '#f8fafc', padding: '1rem', borderRadius: '12px', border: '1px solid #e2e8f0', marginBottom: '1.25rem' }}>
-                      <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.9rem', color: '#4D8FC7', marginBottom: '0.35rem' }}>
+                    <div style={{ background: '#f8fafc', padding: '0.9rem', borderRadius: '12px', border: '1px solid #e2e8f0', marginBottom: '1.25rem' }}>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.88rem', color: '#4D8FC7', marginBottom: '0.35rem' }}>
                         <span>Annual Fees:</span>
                         <span style={{ fontWeight: 700, color: '#062C4D' }}>{col.fees}</span>
                       </div>
-                      <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.9rem', color: '#0284c7', fontWeight: 800 }}>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.88rem', color: '#0284c7', fontWeight: 800 }}>
                         <span>With EBC Concession:</span>
                         <span>{col.concession}</span>
                       </div>
-                      <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.85rem', color: '#4D8FC7', marginTop: '0.35rem', paddingTop: '0.35rem', borderTop: '1px dashed #e2e8f0' }}>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.82rem', color: '#4D8FC7', marginTop: '0.35rem', paddingTop: '0.35rem', borderTop: '1px dashed #e2e8f0' }}>
                         <span>Entrance Cutoff:</span>
                         <span style={{ fontWeight: 700, color: '#062C4D' }}>{col.cutoff}</span>
                       </div>
@@ -395,13 +402,89 @@ export default function StudentHub() {
                       cursor: 'pointer',
                       fontWeight: 800,
                       fontSize: '0.92rem',
-                      transition: 'background 0.2s'
+                      transition: 'all 0.2s'
                     }}
                   >
                     View Full Details & Placement ➔
                   </button>
                 </div>
               ))}
+            </div>
+
+            {/* Page Segmentation Controls (1, 2, 3, 4) */}
+            <div style={{
+              display: 'flex',
+              justify: 'center',
+              alignItems: 'center',
+              gap: '0.6rem',
+              marginTop: '3rem',
+              paddingTop: '2rem',
+              borderTop: '1px solid #e2e8f0'
+            }}>
+              <button
+                onClick={() => {
+                  setCurrentPage(prev => Math.max(prev - 1, 1));
+                  sectionContainerRef.current?.scrollIntoView({ behavior: 'smooth' });
+                }}
+                disabled={currentPage === 1}
+                style={{
+                  padding: '0.55rem 1.1rem',
+                  borderRadius: '10px',
+                  border: '1px solid #cbd5e1',
+                  background: currentPage === 1 ? '#f1f5f9' : '#ffffff',
+                  color: currentPage === 1 ? '#94a3b8' : '#062C4D',
+                  fontWeight: 700,
+                  fontSize: '0.9rem',
+                  cursor: currentPage === 1 ? 'not-allowed' : 'pointer'
+                }}
+              >
+                ‹ Previous
+              </button>
+
+              {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+                <button
+                  key={page}
+                  onClick={() => {
+                    setCurrentPage(page);
+                    sectionContainerRef.current?.scrollIntoView({ behavior: 'smooth' });
+                  }}
+                  style={{
+                    width: '42px',
+                    height: '42px',
+                    borderRadius: '12px',
+                    border: currentPage === page ? 'none' : '1.5px solid #cbd5e1',
+                    background: currentPage === page ? 'linear-gradient(135deg, #0284c7, #1d4ed8)' : '#ffffff',
+                    color: currentPage === page ? '#ffffff' : '#062C4D',
+                    fontWeight: 800,
+                    fontSize: '1rem',
+                    cursor: 'pointer',
+                    boxShadow: currentPage === page ? '0 4px 14px rgba(2, 132, 199, 0.35)' : 'none',
+                    transition: 'all 0.2s ease'
+                  }}
+                >
+                  {page}
+                </button>
+              ))}
+
+              <button
+                onClick={() => {
+                  setCurrentPage(prev => Math.min(prev + 1, totalPages));
+                  sectionContainerRef.current?.scrollIntoView({ behavior: 'smooth' });
+                }}
+                disabled={currentPage === totalPages}
+                style={{
+                  padding: '0.55rem 1.1rem',
+                  borderRadius: '10px',
+                  border: '1px solid #cbd5e1',
+                  background: currentPage === totalPages ? '#f1f5f9' : '#ffffff',
+                  color: currentPage === totalPages ? '#94a3b8' : '#062C4D',
+                  fontWeight: 700,
+                  fontSize: '0.9rem',
+                  cursor: currentPage === totalPages ? 'not-allowed' : 'pointer'
+                }}
+              >
+                Next ›
+              </button>
             </div>
           </section>
         )}
