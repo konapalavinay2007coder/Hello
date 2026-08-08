@@ -18,9 +18,9 @@ export default function StudentHub() {
   const [activeCourse, setActiveCourse] = useState(null);
   const [enrolledMap, setEnrolledMap] = useState({});
 
-  // Page Segmentation state for College Finder (3x3 grid = 9 layouts per page)
+  // Page Segmentation state for College Finder (3x2 grid = 6 layouts per page)
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 9;
+  const itemsPerPage = 6;
   const totalPages = Math.ceil(colleges.length / itemsPerPage);
   const paginatedColleges = colleges.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
 
@@ -349,7 +349,7 @@ export default function StudentHub() {
               </p>
             </div>
 
-            {/* 3x3 Layout Grid per Page (9 cards per page) */}
+            {/* 3x2 Layout Grid per Page (6 cards per page in 3 columns x 2 rows) */}
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '1.5rem' }}>
               {paginatedColleges.map((col) => (
                 <div key={col.id} style={{
