@@ -276,6 +276,17 @@ export const handleImageQuery = async (req, res) => {
     const isPrivacyProtected = textMasked || visionResult.data.privacyMasked || /adhar|aadhaar|id card|identity|आधार/i.test(userText);
     const privacyNote = visionResult.data.privacyNote || textNote || '🔒 Privacy Protection Active: 12-Digit Aadhaar sequence and personal credentials masked for security.';
 
+    let referenceLink = visionResult.data.referenceLink || null;
+    if (!referenceLink && (isPrivacyProtected || /adhar|aadhaar|id card|identity|uidai|आधार/i.test(userText))) {
+      referenceLink = {
+        title: language === 'en' ? '💳 UIDAI Official Aadhaar Sample & Verification Portal' : '💳 UIDAI आधार कार्ड आधिकारिक पोर्टल एवं सैंपल',
+        url: 'https://uidai.gov.in',
+        description: language === 'en'
+          ? 'View official UIDAI Aadhaar Card sample layout, security features, e-Aadhaar PDF sample, and online verification services on the official portal.'
+          : 'UIDAI आधार कार्ड का आधिकारिक लेआउट, e-Aadhaar सैंपल और डाउनलोड सेवाएँ देखने के लिए यहाँ क्लिक करें।'
+      };
+    }
+
     res.status(200).json({
       success: visionResult.success,
       domain,
@@ -286,6 +297,7 @@ export const handleImageQuery = async (req, res) => {
       privacyMasked: isPrivacyProtected,
       privacyNote: privacyNote,
       privacyMaskDetails: textDetails.length > 0 ? textDetails : ['aadhaar'],
+      referenceLink: referenceLink,
       modelUsed: visionResult.modelUsed
     });
   } catch (error) {

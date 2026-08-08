@@ -287,7 +287,8 @@ export default function AdvisoryWorkspace() {
             privacyMasked: res.privacyMasked,
             privacyNote: res.privacyNote,
             followUpQuestions: res.followUpQuestions || [],
-            recommendations: res.recommendations || []
+            recommendations: res.recommendations || [],
+            referenceLink: res.referenceLink || null
           }
         ]);
       } else {

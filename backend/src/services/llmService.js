@@ -204,9 +204,18 @@ JSON Output:`;
       }
     }
 
-    // Auto-attach MHT-CET Scorecard Reference Link if query relates to CET / admission / Pune colleges
+    // Auto-attach Reference Links (Aadhaar Card sample format / MHT-CET Scorecard)
     const combinedText = (text + ' ' + (historySnippet || '') + ' ' + responseText + ' ' + (followUpQuestions.join(' '))).toLowerCase();
-    if (!referenceLink && (combinedText.includes('cet') || combinedText.includes('percentile') || combinedText.includes('scorecard') || combinedText.includes('admission') || combinedText.includes('pune college') || combinedText.includes('12th'))) {
+
+    if (!referenceLink && (combinedText.includes('adhar') || combinedText.includes('aadhaar') || combinedText.includes('uidai') || combinedText.includes('id card') || combinedText.includes('identity card'))) {
+      referenceLink = {
+        title: language === 'en' ? '💳 UIDAI Official Aadhaar Sample & Portal' : '💳 UIDAI आधार कार्ड आधिकारिक पोर्टल एवं सैंपल',
+        url: 'https://uidai.gov.in',
+        description: language === 'en'
+          ? 'Unsure how an official Aadhaar card looks or where to download e-Aadhaar? Click here to view the official UIDAI sample layout, security features, and online services portal.'
+          : 'क्या आपको देखना है कि आधिकारिक आधार कार्ड कैसा दिखता है? UIDAI आधिकारिक सैंपल लेआउट एवं e-Aadhaar सेवाएँ देखने के लिए यहाँ क्लिक करें।'
+      };
+    } else if (!referenceLink && (combinedText.includes('cet') || combinedText.includes('percentile') || combinedText.includes('scorecard') || combinedText.includes('admission') || combinedText.includes('pune college') || combinedText.includes('12th'))) {
       referenceLink = {
         title: language === 'en' ? '📄 MHT-CET Score Card Reference & Format' : '📄 MHT-CET स्कोरकार्ड प्रारूप एवं संदर्भ',
         url: 'https://cetcell.mahacet.org',
