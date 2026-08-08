@@ -604,12 +604,27 @@ export default function StudentHub() {
 
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '0.85rem', paddingTop: '1rem', borderTop: '1px solid #e2e8f0' }}>
                       <span style={{ color: '#4D8FC7', fontWeight: 700 }}>Deadline: {sch.deadline}</span>
-                      <button 
-                        onClick={() => setApplyModal(sch)}
-                        style={{ background: '#0284c7', color: '#ffffff', border: 'none', padding: '0.6rem 1.25rem', borderRadius: '10px', cursor: 'pointer', fontWeight: 800, boxShadow: '0 4px 12px rgba(2, 132, 199, 0.3)' }}
+                      <a 
+                        href={sch.link || 'https://mahadbt.maharashtra.gov.in'}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        style={{ 
+                          background: '#0284c7', 
+                          color: '#ffffff', 
+                          textDecoration: 'none', 
+                          padding: '0.6rem 1.25rem', 
+                          borderRadius: '10px', 
+                          cursor: 'pointer', 
+                          fontWeight: 800, 
+                          fontSize: '0.88rem',
+                          display: 'inline-flex',
+                          alignItems: 'center',
+                          gap: '0.35rem',
+                          boxShadow: '0 4px 12px rgba(2, 132, 199, 0.3)'
+                        }}
                       >
-                        {t.applyNow}
-                      </button>
+                        <span>Apply Now ↗</span>
+                      </a>
                     </div>
                   </div>
                 ))}
