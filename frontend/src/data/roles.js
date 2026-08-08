@@ -24,18 +24,10 @@ export const roles = [
     borderColor: '#a5d6a7'
   },
   {
-    id: 'parent',
-    icon: '👨‍👩‍👧',
-    title: { en: "I'm a Parent", hi: "मैं अभिभावक हूँ", mr: "मी पालक आहे" },
-    desc: { en: "Higher education options and fee concessions for children", hi: "बच्चों के लिए उच्च शिक्षा और फीस छूट योजनाएं", mr: "मुलांसाठी उच्च शिक्षण आणि फी सवलत" },
-    color: '#fff3e0',
-    borderColor: '#ffcc80'
-  },
-  {
-    id: 'csc',
+    id: 'schemes',
     icon: '🏛️',
-    title: { en: "I work at a CSC", hi: "मैं CSC में काम करता हूँ", mr: "मी CSC मध्ये काम करतो" },
-    desc: { en: "Assisted advisory workspace for rural citizens", hi: "ग्रामीण नागरिकों के लिए सहायक डिजिटल सेवा केंद्र", mr: "ग्रामीण नागरिकांसाठी डिजिटल सेवा केंद्र" },
+    title: { en: "Community & Schemes", hi: "सरकारी योजनाएं", mr: "शासकीय योजना" },
+    desc: { en: "Browse 50+ government schemes and rural support", hi: "50+ सरकारी योजनाएं देखें", mr: "50+ शासकीय योजना पहा" },
     color: '#e0f2f1',
     borderColor: '#80cbc4'
   }
