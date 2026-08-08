@@ -637,9 +637,13 @@ export default function AdvisoryWorkspace() {
 
             <div style={{ borderTop: '1px solid #e2e8f0', width: '100%', margin: '0.5rem 0' }} />
 
-            <Link to="/more" title="Settings" style={{ marginTop: 'auto', fontSize: '1.2rem', textDecoration: 'none' }}>
+            <button 
+              onClick={() => setShowSubscriptionModal(true)} 
+              title="Subscription Plans" 
+              style={{ marginTop: 'auto', fontSize: '1.2rem', background: 'transparent', border: 'none', cursor: 'pointer' }}
+            >
               ⚙️
-            </Link>
+            </button>
           </div>
         )}
 
@@ -662,9 +666,9 @@ export default function AdvisoryWorkspace() {
         overflow: 'hidden'
       }}>
         
-        {/* Floating Expand Toggle Button when sidebar is collapsed */}
+        {/* Floating Expand Toggle Button & Subscription Upgrade Pill when sidebar is collapsed */}
         {!isSidebarOpen && (
-          <div style={{ padding: '0.85rem 1.25rem 0 1.25rem' }}>
+          <div style={{ padding: '0.85rem 1.25rem 0 1.25rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
             <button
               onClick={() => setIsSidebarOpen(true)}
               title="Expand sidebar"
@@ -685,6 +689,28 @@ export default function AdvisoryWorkspace() {
             >
               <span>◧</span>
               <span>Expand</span>
+            </button>
+
+            <button
+              onClick={() => setShowSubscriptionModal(true)}
+              title="View Subscription Plans"
+              style={{
+                background: 'linear-gradient(135deg, #0284c7, #1d4ed8)',
+                color: '#ffffff',
+                border: 'none',
+                borderRadius: '9999px',
+                padding: '0.4rem 0.95rem',
+                cursor: 'pointer',
+                fontSize: '0.82rem',
+                fontWeight: 800,
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '0.4rem',
+                boxShadow: '0 3px 10px rgba(2, 132, 199, 0.3)'
+              }}
+            >
+              <span>⚡</span>
+              <span>Free Plan (Upgrade ↗)</span>
             </button>
           </div>
         )}
