@@ -801,8 +801,14 @@ export default function AdvisoryWorkspace() {
                         boxShadow: '0 3px 10px rgba(2, 132, 199, 0.25)'
                       }}
                     >
-                      <span>View Sample MHT-CET Scorecard</span>
-                      <span>↗</span>
+                      <span>
+                        {msg.referenceLink.buttonText || 
+                          (msg.referenceLink.url.includes('uidai') 
+                            ? 'Open Official UIDAI Aadhaar Portal ↗' 
+                            : msg.referenceLink.url.includes('cetcell') 
+                              ? 'View Sample MHT-CET Scorecard ↗' 
+                              : 'Open Official Portal ↗')}
+                      </span>
                     </a>
                   </div>
                 )}
