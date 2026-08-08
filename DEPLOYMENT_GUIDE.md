@@ -32,15 +32,19 @@ This guide provides step-by-step instructions to deploy the **hello** platform:
 
 ## 🛠️ Step 1: Deploy Backend on Railway
 
-### 1.1 Connect Repository on Railway
+### 1.1 Connect Repository & Fix Root Directory on Railway
 1. Log in to [Railway.app](https://railway.app).
 2. Click **"+ New Project"** ➔ Select **"Deploy from GitHub repo"**.
 3. Choose your repository `Hello`.
-4. Under **"Root Directory"**, set the path to:
-   ```txt
-   backend
-   ```
-5. Click **"Deploy"**.
+4. **CRITICAL FIX FOR "railpack process exited with an error"**:
+   - By default, Railway builds from root (`/`). Because our project is a monorepo containing both `frontend` and `backend`, you MUST set the **Root Directory**:
+   - Go to Railway Service ➔ **Settings** tab.
+   - Under **Build** ➔ **Root Directory**, enter:
+     ```txt
+     backend
+     ```
+   - Click **Save**.
+5. Click **"Redeploy"**.
 
 ---
 
