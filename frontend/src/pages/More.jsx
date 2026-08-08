@@ -234,36 +234,7 @@ export default function More() {
             )}
           </section>
 
-          {/* FAQs Accordion */}
-          <section>
-            <h2 style={{ fontSize: '1.5rem', fontWeight: 800, color: '#062C4D', marginBottom: '1.5rem', borderLeft: '4px solid #0284c7', paddingLeft: '0.75rem' }}>
-              {t.faqsTitle}
-            </h2>
-            
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-              {faqs.map((faq, idx) => (
-                <div key={idx} style={{
-                  background: '#ffffff',
-                  border: '1px solid #cbd5e1',
-                  borderRadius: '14px',
-                  overflow: 'hidden'
-                }}>
-                  <button 
-                    onClick={() => setOpenFaq(openFaq === idx ? null : idx)}
-                    style={{ width: '100%', textAlign: 'left', padding: '1.1rem 1.4rem', background: 'transparent', border: 'none', cursor: 'pointer', fontWeight: 800, fontSize: '1rem', color: '#062C4D', display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontFamily: 'inherit' }}
-                  >
-                    <span>{faq.q}</span>
-                    <span style={{ color: '#0284c7' }}>{openFaq === idx ? '▲' : '▼'}</span>
-                  </button>
-                  {openFaq === idx && (
-                    <div style={{ padding: '0 1.4rem 1.4rem 1.4rem', color: '#4D8FC7', fontSize: '0.95rem', lineHeight: 1.6, borderTop: '1px solid #f1f5f9' }}>
-                      {faq.a}
-                    </div>
-                  )}
-                </div>
-              ))}
-            </div>
-          </section>
+
         </div>
       )}
 
