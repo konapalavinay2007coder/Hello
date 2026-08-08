@@ -32,6 +32,7 @@ export const careerPaths = [
 ];
 
 export const scholarships = [
+  // PAGE 1: Top Maharashtra State & National Schemes
   {
     id: 'shahu_maharaj',
     name: 'Rajarshi Chhatrapati Shahu Maharaj Fee Concession',
@@ -71,6 +72,212 @@ export const scholarships = [
     eligibilityText: 'Minority students scoring > 50% in Class 12, income < ₹2.5L',
     helpline: '0120-6619540',
     link: 'https://scholarships.gov.in'
+  },
+  {
+    id: 'panjabrao_hostel',
+    name: 'Dr. Punjabrao Deshmukh Vasatigruh Nirvah Bhatta Yojna',
+    amount: 'Hostel Maintenance Allowance ₹30,000/yr',
+    deadline: '15 October 2026',
+    category: 'ebc',
+    eligibilityText: 'Children of registered small farmers / EBC admitted to professional courses',
+    helpline: '022-49150800',
+    link: 'https://mahadbt.maharashtra.gov.in'
+  },
+  {
+    id: 'central_csss',
+    name: 'Central Sector Scheme of Scholarships (CSSS)',
+    amount: '₹12,000 to ₹20,000 per year',
+    deadline: '31 October 2026',
+    category: 'general',
+    eligibilityText: 'Students above 80th percentile in 12th Board exams, family income < ₹4.5L',
+    helpline: '0120-6619540',
+    link: 'https://scholarships.gov.in'
+  },
+
+  // PAGE 2: Technical, Girl Child & Tribal Schemes
+  {
+    id: 'aicte_pragati',
+    name: 'AICTE Pragati Scholarship for Girls in Technical Education',
+    amount: '₹50,000 per year for course duration',
+    deadline: '31 October 2026',
+    category: 'general',
+    eligibilityText: 'Female students admitted to 1st year Degree/Diploma engineering, income < ₹8L',
+    helpline: '011-29581000',
+    link: 'https://www.aicte-india.org'
+  },
+  {
+    id: 'aicte_saksham',
+    name: 'AICTE Saksham Scholarship for Differently-Abled',
+    amount: '₹50,000 per year for technical degree/diploma',
+    deadline: '31 October 2026',
+    category: 'general',
+    eligibilityText: 'Specially-abled students (> 40% disability) pursuing AICTE approved technical courses',
+    helpline: '011-29581000',
+    link: 'https://www.aicte-india.org'
+  },
+  {
+    id: 'swayam_st',
+    name: 'Pandit Deendayal Upadhyay Swayam Yojna (ST Tribal)',
+    amount: 'Hostel & Food Allowance up to ₹60,000/yr',
+    deadline: '15 November 2026',
+    category: 'sc_st',
+    eligibilityText: 'ST Category tribal students studying in non-governmental hostel facilities',
+    helpline: '1800-267-0007',
+    link: 'https://tribal.maharashtra.gov.in'
+  },
+  {
+    id: 'obc_vjnt_tuition',
+    name: 'Post-Matric Tuition & Exam Fee for OBC / VJNT / SBC',
+    amount: '100% Tuition & Exam Fee Refund',
+    deadline: '30 November 2026',
+    category: 'sc_st',
+    eligibilityText: 'OBC/VJNT/SBC category students admitted via CAP round, income < ₹1.5L',
+    helpline: '022-49150800',
+    link: 'https://mahadbt.maharashtra.gov.in'
+  },
+  {
+    id: 'cm_fellowship',
+    name: 'Chief Minister Fellowship Program Maharashtra',
+    amount: '₹45,000 Monthly Stipend + ₹5,000 Travel',
+    deadline: '15 July 2026',
+    category: 'general',
+    eligibilityText: 'Graduates aged 21-26 with > 60% marks and minimum 1 year work experience',
+    helpline: '022-22025251',
+    link: 'https://cmfellowship.maharashtra.gov.in'
+  },
+  {
+    id: 'pmss_capf',
+    name: 'Prime Minister’s Scholarship Scheme (PMSS CAPF)',
+    amount: '₹3,000/mo for Girls, ₹2,500/mo for Boys',
+    deadline: '30 November 2026',
+    category: 'general',
+    eligibilityText: 'Wards of deceased/ex-servicemen of Central Armed Police Forces & Assam Rifles',
+    helpline: '011-24367800',
+    link: 'https://warb-mha.gov.in'
+  },
+
+  // PAGE 3: Corporate Foundations & Merit Scholarships
+  {
+    id: 'lila_poonawalla',
+    name: 'Lila Poonawalla Foundation Merit Scholarship for Girls',
+    amount: 'Up to ₹1,00,000 per year for Engineering & Pharmacy',
+    deadline: '31 August 2026',
+    category: 'general',
+    eligibilityText: 'Girls admitted to 1st year Engineering/Pharmacy in Pune, Wardha, Amravati, income < ₹3.5L',
+    helpline: '020-27224265',
+    link: 'https://www.lilapoonawallafoundation.com'
+  },
+  {
+    id: 'tata_pankh',
+    name: 'TATA Capital Pankh Scholarship for Professional Degrees',
+    amount: 'Up to 80% of Tuition Fees (Max ₹50,000)',
+    deadline: '15 October 2026',
+    category: 'general',
+    eligibilityText: 'Students in 1st/2nd year Degree/Diploma, scoring > 60% marks, income < ₹4L',
+    helpline: '011-43092248',
+    link: 'https://www.tatacapital.com'
+  },
+  {
+    id: 'hdfc_parivartan',
+    name: 'HDFC Bank Parivartan ECSS Educational Crisis Scholarship',
+    amount: 'Up to ₹75,000 per year',
+    deadline: '31 December 2026',
+    category: 'general',
+    eligibilityText: 'Students facing personal/family financial distress, scoring > 55% marks',
+    helpline: '011-43092248',
+    link: 'https://www.hdfcbank.com'
+  },
+  {
+    id: 'sbi_asha',
+    name: 'SBI Asha Scholarship for School & Higher Education',
+    amount: 'Up to ₹50,000 per year',
+    deadline: '30 November 2026',
+    category: 'general',
+    eligibilityText: 'Meritorious students from low-income families (income < ₹3L) studying in top institutes',
+    helpline: '022-22740525',
+    link: 'https://www.sbifoundation.in'
+  },
+  {
+    id: 'colgate_keep_smiling',
+    name: 'Keep India Smiling Foundational Scholarship (Colgate)',
+    amount: '₹30,000 per year for 3-4 years',
+    deadline: '31 December 2026',
+    category: 'general',
+    eligibilityText: 'Students pursuing BDS, Engineering, or Vocational courses with Class 12 > 60%',
+    helpline: '011-43092248',
+    link: 'https://www.colgate.co.in'
+  },
+  {
+    id: 'nmms_national',
+    name: 'National Means-cum-Merit Scholarship Scheme (NMS)',
+    amount: '₹12,000 per year (Class 9 to 12)',
+    deadline: '30 October 2026',
+    category: 'general',
+    eligibilityText: 'Students studying in Government/Aided schools, scoring > 55% in Class 7/8 exam',
+    helpline: '0120-6619540',
+    link: 'https://scholarships.gov.in'
+  },
+
+  // PAGE 4: Industry Giants & Special Foundation Grants
+  {
+    id: 'ongc_scholarship',
+    name: 'ONGC Scholarship for SC/ST & General OBC Students',
+    amount: '₹48,000 per year for Engineering & MBBS',
+    deadline: '15 November 2026',
+    category: 'sc_st',
+    eligibilityText: 'Students enrolled in 1st year Engineering/MBBS/Geology, family income < ₹4.5L',
+    helpline: '0135-2792630',
+    link: 'https://ongcscholar.org'
+  },
+  {
+    id: 'lic_hfl_vidyadhan',
+    name: 'LIC HFL Vidyadhan Scholarship for Higher Education',
+    amount: 'Up to ₹25,000 per year for Graduation/Post-Graduation',
+    deadline: '31 October 2026',
+    category: 'general',
+    eligibilityText: 'Students scoring > 60% in Class 12/Graduation, family income < ₹3,60,000',
+    helpline: '022-22860860',
+    link: 'https://www.lichousing.com'
+  },
+  {
+    id: 'aditya_birla',
+    name: 'Aditya Birla Capital Scholarship for Professional Students',
+    amount: 'Up to ₹60,000 one-time educational grant',
+    deadline: '15 November 2026',
+    category: 'general',
+    eligibilityText: 'Students enrolled in undergraduate professional degree programs with income < ₹6L',
+    helpline: '011-43092248',
+    link: 'https://www.adityabirlacapital.com'
+  },
+  {
+    id: 'siemens_dual_vet',
+    name: 'Siemens India Dual VET & Engineering Scholarship',
+    amount: '100% Tuition Fee + Laptop + Industrial Internship',
+    deadline: '31 August 2026',
+    category: 'general',
+    eligibilityText: '1st year Diploma/Degree Engineering students in Govt Polytechnics, income < ₹2.5L',
+    helpline: '022-39663000',
+    link: 'https://www.siemens.co.in'
+  },
+  {
+    id: 'kotak_kanya',
+    name: 'Kotak Kanya Scholarship for Female Engineers',
+    amount: '₹1,50,000 per year till completion of Engineering',
+    deadline: '30 September 2026',
+    category: 'general',
+    eligibilityText: 'Meritorious girl students admitted to premier engineering institutes (IIT/NIT/COEP)',
+    helpline: '011-43092248',
+    link: 'https://www.kotakeducation.org'
+  },
+  {
+    id: 'reliance_undergrad',
+    name: 'Reliance Foundation Undergraduate Scholarship',
+    amount: 'Up to ₹2,00,000 over course duration',
+    deadline: '15 October 2026',
+    category: 'general',
+    eligibilityText: 'First-year undergraduate students in any stream scoring > 60% in Class 12, income < ₹15L',
+    helpline: '022-79691456',
+    link: 'https://www.reliancefoundation.org'
   }
 ];
 

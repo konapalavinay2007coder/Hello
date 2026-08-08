@@ -24,6 +24,10 @@ export default function StudentHub() {
   const totalPages = Math.ceil(colleges.length / itemsPerPage);
   const paginatedColleges = colleges.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
 
+  // Page Segmentation state for Scholarships (3x2 grid = 6 layouts per page)
+  const [scholarshipPage, setScholarshipPage] = useState(1);
+  const schItemsPerPage = 6;
+
   const sectionContainerRef = useRef(null);
 
   const handleSelectStage = (stageKey) => {
@@ -37,6 +41,9 @@ export default function StudentHub() {
     if (selectedCategory !== 'all' && s.category !== selectedCategory && s.category !== 'general') return false;
     return true;
   });
+
+  const schTotalPages = Math.ceil(filteredScholarships.length / schItemsPerPage);
+  const paginatedScholarships = filteredScholarships.slice((scholarshipPage - 1) * schItemsPerPage, scholarshipPage * schItemsPerPage);
 
   const handleEnroll = (courseId) => {
     setEnrolledMap({ ...enrolledMap, [courseId]: true });
@@ -567,9 +574,9 @@ export default function StudentHub() {
                 </div>
               </div>
 
-              {/* Scholarships Grid Cards */}
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(440px, 1fr))', gap: '1.75rem' }}>
-                {filteredScholarships.map((sch) => (
+              {/* 3x2 Scholarships Grid Cards (6 per page) */}
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '1.5rem' }}>
+                {paginatedScholarships.map((sch) => (
                   <div key={sch.id} style={{
                     background: '#ffffff',
                     border: '1px solid #cbd5e1',
@@ -581,11 +588,11 @@ export default function StudentHub() {
                     boxShadow: '0 8px 30px rgba(2, 132, 199, 0.06)'
                   }}>
                     <div>
-                      <h3 style={{ margin: '0 0 0.5rem 0', color: '#062C4D', fontSize: '1.25rem', fontWeight: 800 }}>{sch.name}</h3>
-                      <p style={{ margin: '0.4rem 0', fontWeight: 800, color: '#0284c7', fontSize: '1.2rem' }}>
+                      <h3 style={{ margin: '0 0 0.5rem 0', color: '#062C4D', fontSize: '1.2rem', fontWeight: 800 }}>{sch.name}</h3>
+                      <p style={{ margin: '0.4rem 0', fontWeight: 800, color: '#0284c7', fontSize: '1.15rem' }}>
                         {t.benefit} {sch.amount}
                       </p>
-                      <p style={{ fontSize: '0.9rem', color: '#4D8FC7', margin: '0.5rem 0 1.25rem 0', lineHeight: 1.5 }}>
+                      <p style={{ fontSize: '0.88rem', color: '#4D8FC7', margin: '0.5rem 0 1.25rem 0', lineHeight: 1.5 }}>
                         <strong>{t.eligibility}</strong> {sch.eligibilityText}
                       </p>
                     </div>
@@ -601,6 +608,82 @@ export default function StudentHub() {
                     </div>
                   </div>
                 ))}
+              </div>
+
+              {/* Page Segmentation Controls for Scholarships (1, 2, 3, 4) */}
+              <div style={{
+                display: 'flex',
+                justify: 'center',
+                alignItems: 'center',
+                gap: '0.6rem',
+                marginTop: '3rem',
+                paddingTop: '2rem',
+                borderTop: '1px solid #e2e8f0'
+              }}>
+                <button
+                  onClick={() => {
+                    setScholarshipPage(prev => Math.max(prev - 1, 1));
+                    sectionContainerRef.current?.scrollIntoView({ behavior: 'smooth' });
+                  }}
+                  disabled={scholarshipPage === 1}
+                  style={{
+                    padding: '0.55rem 1.1rem',
+                    borderRadius: '10px',
+                    border: '1px solid #cbd5e1',
+                    background: scholarshipPage === 1 ? '#f1f5f9' : '#ffffff',
+                    color: scholarshipPage === 1 ? '#94a3b8' : '#062C4D',
+                    fontWeight: 700,
+                    fontSize: '0.9rem',
+                    cursor: scholarshipPage === 1 ? 'not-allowed' : 'pointer'
+                  }}
+                >
+                  ‹ Previous
+                </button>
+
+                {Array.from({ length: schTotalPages }, (_, i) => i + 1).map((page) => (
+                  <button
+                    key={page}
+                    onClick={() => {
+                      setScholarshipPage(page);
+                      sectionContainerRef.current?.scrollIntoView({ behavior: 'smooth' });
+                    }}
+                    style={{
+                      width: '42px',
+                      height: '42px',
+                      borderRadius: '12px',
+                      border: scholarshipPage === page ? 'none' : '1.5px solid #cbd5e1',
+                      background: scholarshipPage === page ? 'linear-gradient(135deg, #0284c7, #1d4ed8)' : '#ffffff',
+                      color: scholarshipPage === page ? '#ffffff' : '#062C4D',
+                      fontWeight: 800,
+                      fontSize: '1rem',
+                      cursor: 'pointer',
+                      boxShadow: scholarshipPage === page ? '0 4px 14px rgba(2, 132, 199, 0.35)' : 'none',
+                      transition: 'all 0.2s ease'
+                    }}
+                  >
+                    {page}
+                  </button>
+                ))}
+
+                <button
+                  onClick={() => {
+                    setScholarshipPage(prev => Math.min(prev + 1, schTotalPages));
+                    sectionContainerRef.current?.scrollIntoView({ behavior: 'smooth' });
+                  }}
+                  disabled={scholarshipPage === schTotalPages}
+                  style={{
+                    padding: '0.55rem 1.1rem',
+                    borderRadius: '10px',
+                    border: '1px solid #cbd5e1',
+                    background: scholarshipPage === schTotalPages ? '#f1f5f9' : '#ffffff',
+                    color: scholarshipPage === schTotalPages ? '#94a3b8' : '#062C4D',
+                    fontWeight: 700,
+                    fontSize: '0.9rem',
+                    cursor: scholarshipPage === schTotalPages ? 'not-allowed' : 'pointer'
+                  }}
+                >
+                  Next ›
+                </button>
               </div>
           </section>
         )}
