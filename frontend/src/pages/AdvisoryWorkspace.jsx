@@ -265,6 +265,15 @@ export default function AdvisoryWorkspace() {
         const res = await postQueryImage(formData);
         setImageFile(null);
 
+        // Update user message with privacy status if detected
+        if (res.privacyMasked) {
+          setMessages(prev => prev.map(m => m.id === userMsgId ? { 
+            ...m, 
+            privacyMasked: true, 
+            privacyNote: res.privacyNote || '🔒 Privacy Protection Active: 12-Digit Aadhaar / PII digits masked.' 
+          } : m));
+        }
+
         const botMsgId = `bot-${Date.now()}`;
         setMessages(prev => [
           ...prev,
@@ -274,6 +283,8 @@ export default function AdvisoryWorkspace() {
             time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
             type: 'image',
             text: res.analysisText,
+            privacyMasked: res.privacyMasked,
+            privacyNote: res.privacyNote,
             followUpQuestions: res.followUpQuestions || [],
             recommendations: res.recommendations || []
           }
@@ -286,6 +297,14 @@ export default function AdvisoryWorkspace() {
           history: historyPayload,
           location: { district: 'Nagaur', state: 'Rajasthan' }
         });
+
+        if (res.privacyMasked) {
+          setMessages(prev => prev.map(m => m.id === userMsgId ? { 
+            ...m, 
+            privacyMasked: true, 
+            privacyNote: res.privacyNote || '🔒 Privacy Protection Active: PII / sensitive digits masked.' 
+          } : m));
+        }
 
         const botMsgId = `bot-${Date.now()}`;
         setMessages(prev => [
@@ -303,6 +322,7 @@ export default function AdvisoryWorkspace() {
             privacyNote: res.privacyNote,
             enhancedPrompt: res.enhancedPrompt,
             followUpQuestions: res.followUpQuestions || [],
+            referenceLink: res.referenceLink || null,
             sources: res.sources
           }
         ]);
@@ -720,6 +740,46 @@ export default function AdvisoryWorkspace() {
                 <div style={{ fontSize: '1.05rem', lineHeight: '1.65', whiteSpace: 'pre-wrap' }}>
                   {msg.text}
                 </div>
+
+                {/* Scorecard / Official Reference Link Card */}
+                {msg.referenceLink && (
+                  <div style={{
+                    marginTop: '0.85rem',
+                    padding: '0.85rem 1.1rem',
+                    background: 'linear-gradient(135deg, rgba(2, 132, 199, 0.08), rgba(29, 78, 216, 0.04))',
+                    border: '1.5px solid rgba(2, 132, 199, 0.3)',
+                    borderRadius: '12px',
+                    boxShadow: '0 4px 14px rgba(2, 132, 199, 0.1)'
+                  }}>
+                    <div style={{ fontWeight: 800, color: '#0284c7', fontSize: '0.92rem', marginBottom: '0.35rem', display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+                      <span>{msg.referenceLink.title || '📄 Scorecard Reference & Format'}</span>
+                    </div>
+                    <p style={{ fontSize: '0.84rem', color: '#4D8FC7', margin: '0 0 0.65rem 0', lineHeight: 1.45 }}>
+                      {msg.referenceLink.description}
+                    </p>
+                    <a 
+                      href={msg.referenceLink.url} 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      style={{
+                        display: 'inline-flex',
+                        alignItems: 'center',
+                        gap: '0.4rem',
+                        background: 'linear-gradient(135deg, #0284c7, #1d4ed8)',
+                        color: '#ffffff',
+                        textDecoration: 'none',
+                        padding: '0.45rem 1.1rem',
+                        borderRadius: '8px',
+                        fontSize: '0.82rem',
+                        fontWeight: 800,
+                        boxShadow: '0 3px 10px rgba(2, 132, 199, 0.25)'
+                      }}
+                    >
+                      <span>View Sample MHT-CET Scorecard</span>
+                      <span>↗</span>
+                    </a>
+                  </div>
+                )}
 
                 {/* Smart Central Point Redirection CTA Button */}
                 {msg.role === 'assistant' && (() => {
